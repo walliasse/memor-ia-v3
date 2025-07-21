@@ -30,39 +30,39 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
       className="group hover:shadow-warm transition-all duration-300 cursor-pointer bg-gradient-memory border-border/50"
       onClick={onClick}
     >
-      <CardContent className="p-6">
+      <CardContent className="p-4 sm:p-6">
         {/* Header avec date et lieu */}
-        <div className="flex items-center justify-between mb-3 text-sm text-muted-foreground">
-          <div className="flex items-center space-x-2">
-            <Calendar className="h-4 w-4" />
-            <span>{formatDate(memory.date)}</span>
+        <div className="flex items-start sm:items-center justify-between mb-3 text-xs sm:text-sm text-muted-foreground gap-2">
+          <div className="flex items-center space-x-1 sm:space-x-2 min-w-0">
+            <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <span className="truncate">{formatDate(memory.date)}</span>
           </div>
           {memory.location && (
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-1 flex-shrink-0">
               <MapPin className="h-3 w-3" />
-              <span className="text-xs">{memory.location}</span>
+              <span className="text-xs truncate max-w-20 sm:max-w-none">{memory.location}</span>
             </div>
           )}
         </div>
 
         {/* Titre */}
-        <h3 className="font-serif text-lg font-medium text-foreground mb-3 group-hover:text-primary transition-colors">
+        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
           {memory.title}
         </h3>
 
         {/* Image si présente */}
         {memory.image && (
-          <div className="mb-4 rounded-lg overflow-hidden">
+          <div className="mb-3 sm:mb-4 rounded-lg overflow-hidden">
             <img 
               src={memory.image} 
               alt={memory.title}
-              className="w-full h-40 object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-32 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
         )}
 
         {/* Contenu tronqué */}
-        <p className="text-foreground/80 leading-relaxed line-clamp-3">
+        <p className="text-sm sm:text-base text-foreground/80 leading-relaxed line-clamp-3">
           {memory.content}
         </p>
 

@@ -53,7 +53,7 @@ const Index = () => {
       {!hasMemories ? (
         <WelcomeSection onGetStarted={handleGetStarted} />
       ) : (
-        <main className="container mx-auto px-4 py-8" id="timeline">
+        <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8" id="timeline">
           <Timeline searchQuery={searchQuery} />
         </main>
       )}

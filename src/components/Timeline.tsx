@@ -78,24 +78,24 @@ const Timeline = ({ searchQuery }: TimelineProps) => {
   return (
     <div className="space-y-6">
       {/* Navigation mensuelle */}
-      <div className="flex items-center justify-between bg-gradient-warm rounded-lg p-4 shadow-soft">
-        <Button variant="ghost" size="icon" onClick={previousMonth}>
-          <ChevronLeft className="h-5 w-5" />
+      <div className="flex items-center justify-between bg-gradient-warm rounded-lg p-3 sm:p-4 shadow-soft">
+        <Button variant="ghost" size="icon" onClick={previousMonth} className="h-9 w-9 sm:h-10 sm:w-10">
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
         
-        <h2 className="font-serif text-xl font-medium text-foreground capitalize">
+        <h2 className="font-serif text-lg sm:text-xl font-medium text-foreground capitalize">
           {formatMonth(currentMonth)}
         </h2>
         
-        <Button variant="ghost" size="icon" onClick={nextMonth}>
-          <ChevronRight className="h-5 w-5" />
+        <Button variant="ghost" size="icon" onClick={nextMonth} className="h-9 w-9 sm:h-10 sm:w-10">
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
       </div>
 
       {/* Messages d'état */}
       {searchQuery && (
-        <div className="text-center py-4">
-          <p className="text-muted-foreground">
+        <div className="text-center py-3 sm:py-4">
+          <p className="text-sm sm:text-base text-muted-foreground px-2">
             {filteredMemories.length > 0 
               ? `${filteredMemories.length} souvenir(s) trouvé(s) pour "${searchQuery}"`
               : `Aucun souvenir trouvé pour "${searchQuery}"`
@@ -106,7 +106,7 @@ const Timeline = ({ searchQuery }: TimelineProps) => {
 
       {/* Grille des souvenirs */}
       {filteredMemories.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {filteredMemories.map((memory) => (
             <MemoryCard 
               key={memory.id} 
@@ -119,15 +119,15 @@ const Timeline = ({ searchQuery }: TimelineProps) => {
           ))}
         </div>
       ) : !searchQuery ? (
-        <div className="text-center py-12">
-          <div className="bg-gradient-memory rounded-lg p-8 max-w-md mx-auto shadow-soft">
-            <h3 className="font-serif text-lg font-medium text-foreground mb-2">
+        <div className="text-center py-8 sm:py-12">
+          <div className="bg-gradient-memory rounded-lg p-6 sm:p-8 max-w-md mx-auto shadow-soft">
+            <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-2">
               Aucun souvenir ce mois-ci
             </h3>
-            <p className="text-muted-foreground mb-4">
+            <p className="text-sm sm:text-base text-muted-foreground mb-4">
               Commencez à capturer vos moments précieux
             </p>
-            <Button className="bg-gradient-gold text-primary-foreground hover:opacity-90">
+            <Button className="bg-gradient-gold text-primary-foreground hover:opacity-90 min-h-10">
               Créer votre premier souvenir
             </Button>
           </div>

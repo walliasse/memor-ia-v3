@@ -49,21 +49,21 @@ const MemoryForm = ({ onSave, onCancel }: MemoryFormProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-gradient-memory shadow-warm">
-        <CardHeader className="border-b border-border/50">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4">
+      <Card className="w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto bg-gradient-memory shadow-warm">
+        <CardHeader className="border-b border-border/50 p-4 sm:p-6">
           <div className="flex items-center justify-between">
-            <CardTitle className="font-serif text-xl text-foreground">
+            <CardTitle className="font-serif text-lg sm:text-xl text-foreground">
               Nouveau souvenir
             </CardTitle>
-            <Button variant="ghost" size="icon" onClick={onCancel}>
-              <X className="h-5 w-5" />
+            <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8 sm:h-10 sm:w-10">
+              <X className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </div>
         </CardHeader>
 
-        <CardContent className="p-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <CardContent className="p-4 sm:p-6">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Titre */}
             <div className="space-y-2">
               <Label htmlFor="title" className="text-sm font-medium text-foreground">
@@ -74,13 +74,13 @@ const MemoryForm = ({ onSave, onCancel }: MemoryFormProps) => {
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                 placeholder="Donnez un titre à ce moment..."
-                className="bg-background/50 border-border focus:bg-background"
+                className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
                 required
               />
             </div>
 
             {/* Date et lieu */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="date" className="text-sm font-medium text-foreground flex items-center">
                   <Calendar className="h-4 w-4 mr-2" />
@@ -91,7 +91,7 @@ const MemoryForm = ({ onSave, onCancel }: MemoryFormProps) => {
                   type="date"
                   value={formData.date}
                   onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                  className="bg-background/50 border-border focus:bg-background"
+                  className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
                   required
                 />
               </div>
@@ -106,7 +106,7 @@ const MemoryForm = ({ onSave, onCancel }: MemoryFormProps) => {
                   value={formData.location}
                   onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                   placeholder="Où étiez-vous ?"
-                  className="bg-background/50 border-border focus:bg-background"
+                  className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
                 />
               </div>
             </div>
@@ -122,14 +122,14 @@ const MemoryForm = ({ onSave, onCancel }: MemoryFormProps) => {
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                className="bg-background/50 border-border focus:bg-background"
+                className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
               />
               {imagePreview && (
                 <div className="mt-3 rounded-lg overflow-hidden">
                   <img 
                     src={imagePreview} 
                     alt="Aperçu"
-                    className="w-full h-48 object-cover"
+                    className="w-full h-40 sm:h-48 object-cover"
                   />
                 </div>
               )}
@@ -145,7 +145,7 @@ const MemoryForm = ({ onSave, onCancel }: MemoryFormProps) => {
                 value={formData.content}
                 onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
                 placeholder="Racontez-nous ce moment... Que s'est-il passé ? Comment vous sentiez-vous ?"
-                className="min-h-32 bg-background/50 border-border focus:bg-background resize-none"
+                className="min-h-28 sm:min-h-32 bg-background/50 border-border focus:bg-background resize-none"
                 required
               />
             </div>
@@ -154,18 +154,18 @@ const MemoryForm = ({ onSave, onCancel }: MemoryFormProps) => {
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button 
                 type="submit" 
-                className="flex-1 bg-gradient-gold text-primary-foreground hover:opacity-90"
+                className="flex-1 bg-gradient-gold text-primary-foreground hover:opacity-90 min-h-11"
               >
                 <Save className="h-4 w-4 mr-2" />
-                Sauvegarder le souvenir
+                <span className="text-sm sm:text-base">Sauvegarder le souvenir</span>
               </Button>
               <Button 
                 type="button" 
                 variant="outline" 
                 onClick={onCancel}
-                className="flex-1"
+                className="flex-1 min-h-11"
               >
-                Annuler
+                <span className="text-sm sm:text-base">Annuler</span>
               </Button>
             </div>
           </form>

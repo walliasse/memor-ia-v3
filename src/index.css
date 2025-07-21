@@ -2,39 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Memor.ia Design System - Journal personnel élégant */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors - tons crème et beige chauds */
+    --background: 42 15% 97%;
+    --foreground: 25 25% 15%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 42 20% 98%;
+    --card-foreground: 25 25% 15%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 42 20% 98%;
+    --popover-foreground: 25 25% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - doré élégant */
+    --primary: 38 65% 55%;
+    --primary-foreground: 42 20% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - beige doux */
+    --secondary: 42 25% 92%;
+    --secondary-foreground: 25 35% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 42 20% 94%;
+    --muted-foreground: 25 15% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - bleu profond nostalgique */
+    --accent: 220 45% 45%;
+    --accent-foreground: 42 20% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 42 20% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 42 20% 88%;
+    --input: 42 20% 94%;
+    --ring: 38 65% 55%;
+
+    /* Gradients personnalisés */
+    --gradient-warm: linear-gradient(135deg, hsl(42 25% 96%), hsl(38 35% 92%));
+    --gradient-gold: linear-gradient(135deg, hsl(38 65% 55%), hsl(45 70% 65%));
+    --gradient-memory: linear-gradient(135deg, hsl(42 20% 98%), hsl(220 20% 95%));
+    
+    /* Ombres douces */
+    --shadow-soft: 0 4px 20px hsl(25 25% 15% / 0.08);
+    --shadow-warm: 0 8px 32px hsl(38 45% 35% / 0.12);
+    
+    /* Transitions fluides */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --radius: 0.5rem;
 

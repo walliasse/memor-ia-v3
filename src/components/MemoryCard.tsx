@@ -1,14 +1,6 @@
 import { Calendar, MapPin, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-
-interface Memory {
-  id: string;
-  title: string;
-  content: string;
-  date: string;
-  location?: string;
-  image?: string;
-}
+import { Memory } from "@/lib/supabase";
 
 interface MemoryCardProps {
   memory: Memory;
@@ -23,6 +15,13 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
       month: 'long',
       year: 'numeric'
     });
+  };
+
+  // Générer un titre à partir du contenu
+  const getTitle = (content: string) => {
+    const words = content.trim().split(' ');
+    if (words.length <= 6) return content;
+    return words.slice(0, 6).join(' ') + '...';
   };
 
   return (
@@ -45,17 +44,17 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
           )}
         </div>
 
-        {/* Titre */}
+        {/* Titre généré */}
         <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
-          {memory.title}
+          {getTitle(memory.content)}
         </h3>
 
         {/* Image si présente */}
-        {memory.image && (
+        {memory.image_url && (
           <div className="mb-3 sm:mb-4 rounded-lg overflow-hidden">
             <img 
-              src={memory.image} 
-              alt={memory.title}
+              src={memory.image_url} 
+              alt="Souvenir"
               className="w-full h-32 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"
             />
           </div>
@@ -67,7 +66,7 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
         </p>
 
         {/* Indicateur d'image */}
-        {memory.image && (
+        {memory.image_url && (
           <div className="flex items-center mt-3 text-xs text-muted-foreground">
             <ImageIcon className="h-3 w-3 mr-1" />
             <span>Avec image</span>

@@ -1,6 +1,7 @@
-import { User } from "lucide-react";
+import { User, Moon, Sun } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface HeaderProps {
   title?: string;
@@ -8,6 +9,7 @@ interface HeaderProps {
 
 const Header = ({ title = "Souvenirs" }: HeaderProps) => {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
@@ -30,8 +32,21 @@ const Header = ({ title = "Souvenirs" }: HeaderProps) => {
             </h2>
           </div>
 
-          {/* Bouton profil à droite */}
-          <div className="flex items-center">
+          {/* Boutons à droite */}
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="h-9 w-9 sm:h-10 sm:w-10"
+            >
+              {theme === 'dark' ? (
+                <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
+              ) : (
+                <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
+              )}
+            </Button>
+            
             <Button 
               variant="ghost" 
               size="icon" 

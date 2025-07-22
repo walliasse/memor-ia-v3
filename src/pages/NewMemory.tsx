@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import MemoryForm from "@/components/MemoryForm";
 import Header from "@/components/Header";
-import { useToast } from "@/hooks/use-toast";
+import { useMemories } from "@/hooks/useMemories";
 
 interface MemoryFormData {
   content: string;
@@ -12,19 +12,21 @@ interface MemoryFormData {
 
 export default function NewMemory() {
   const navigate = useNavigate();
-  const { toast } = useToast();
+  const { createMemory, saving } = useMemories();
 
-  const handleSaveMemory = (memoryData: MemoryFormData) => {
-    // TODO: Sauvegarder en base de données via Supabase
-    console.log('Nouveau souvenir:', memoryData);
-    
-    toast({
-      title: "Souvenir sauvegardé !",
-      description: "Votre moment précieux a été ajouté à votre journal.",
+  const handleSaveMemory = async (memoryData: MemoryFormData) => {
+    const result = await createMemory({
+      content: memoryData.content,
+      date: memoryData.date,
+      location: memoryData.location,
+      image: memoryData.image
     });
-    
-    // Rediriger vers la page des souvenirs
-    navigate("/souvenirs");
+
+    if (result.success) {
+      // Rediriger vers la page des souvenirs
+      navigate("/souvenirs");
+    }
+    // Les erreurs sont gérées dans le hook useMemories
   };
 
   const handleCancel = () => {

@@ -5,6 +5,7 @@ import WelcomeSection from "@/components/WelcomeSection";
 import Timeline from "@/components/Timeline";
 import MemoryForm from "@/components/MemoryForm";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const [showMemoryForm, setShowMemoryForm] = useState(false);
@@ -12,6 +13,7 @@ const Index = () => {
   const [hasMemories, setHasMemories] = useState(false); // Commencer par la page d'accueil
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user, loading, isAuthenticated } = useAuth();
 
   const handleAddMemory = () => {
     setShowMemoryForm(true);
@@ -35,8 +37,11 @@ const Index = () => {
   };
 
   const handleGetStarted = () => {
-    // Rediriger vers la page des souvenirs au lieu de changer l'état local
-    navigate("/souvenirs");
+    if (isAuthenticated) {
+      navigate("/souvenirs");
+    } else {
+      navigate("/login");
+    }
   };
 
   return (
@@ -62,6 +67,20 @@ const Index = () => {
           onCancel={() => setShowMemoryForm(false)}
         />
       )}
+
+      {/* Debug info - temporaire pour tester Supabase */}
+      <div className="fixed bottom-4 right-4 bg-card p-3 rounded-lg shadow text-xs space-y-1 max-w-48">
+        <div>Auth: {loading ? 'Loading...' : isAuthenticated ? 'Connecté' : 'Non connecté'}</div>
+        {user && <div>User: {user.email}</div>}
+        {!isAuthenticated && !loading && (
+          <button 
+            onClick={() => navigate("/login")}
+            className="text-primary underline text-xs"
+          >
+            Se connecter
+          </button>
+        )}
+      </div>
     </div>
   );
 };

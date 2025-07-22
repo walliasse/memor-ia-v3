@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Transition smooth pour le changement de thème */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Variables CSS pour les thèmes */
+:root {
+  --transition-theme: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Améliorer les transitions pour les éléments interactifs */
+.dark {
+  color-scheme: dark;
+}
+
+.light {
+  color-scheme: light;
+}
+
 /* Memor.ia Design System - Journal personnel élégant */
 
 @layer base {

@@ -1,25 +1,83 @@
 import { useState } from "react";
-import { Bell, Shield, Palette, Download, Trash2, Moon, Sun } from "lucide-react";
+import { Bell, Shield, Download, Trash2, LogOut, AlertTriangle, Palette } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import Header from "@/components/Header";
 import ProfileSidebar from "@/components/ProfileSidebar";
+import { useAuth } from "@/hooks/useAuth";
+import { useMemories } from "@/hooks/useMemories";
+import { useTheme } from "@/contexts/ThemeContext";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Settings() {
   const [settings, setSettings] = useState({
     notifications: true,
     emailReminders: false,
-    darkMode: false,
     autoSave: true,
     language: "fr",
     exportFormat: "json"
   });
 
+  const { signOut } = useAuth();
+  const { memories } = useMemories();
+  const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const handleSettingChange = (key: string, value: boolean | string) => {
     setSettings(prev => ({ ...prev, [key]: value }));
+    toast({
+      title: "Paramètre mis à jour",
+      description: `${key} a été modifié.`,
+    });
+  };
+
+  const handleSignOut = async () => {
+    const result = await signOut();
+    if (result.success) {
+      navigate("/");
+    }
+  };
+
+  const handleExportData = () => {
+    const dataToExport = {
+      memories: memories,
+      exportDate: new Date().toISOString(),
+      version: "1.0"
+    };
+    
+    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { 
+      type: 'application/json' 
+    });
+    
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `memor-ia-export-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Export réussi",
+      description: "Vos données ont été téléchargées.",
+    });
+  };
+
+  const handleDeleteAccount = async () => {
+    // Pour l'instant, on fait juste une déconnexion
+    // Dans un vrai projet, il faudrait appeler une API pour supprimer le compte
+    toast({
+      title: "Fonctionnalité à venir",
+      description: "La suppression de compte sera disponible prochainement.",
+      variant: "destructive"
+    });
   };
 
   return (
@@ -96,8 +154,14 @@ export default function Settings() {
                   </div>
                   <Switch
                     id="dark-mode"
-                    checked={settings.darkMode}
-                    onCheckedChange={(checked) => handleSettingChange('darkMode', checked)}
+                    checked={theme === 'dark'}
+                    onCheckedChange={(checked) => {
+                      toggleTheme();
+                      toast({
+                        title: "Thème mis à jour",
+                        description: `Mode ${checked ? 'sombre' : 'clair'} activé.`,
+                      });
+                    }}
                   />
                 </div>
 
@@ -195,7 +259,7 @@ export default function Settings() {
             <Card className="bg-destructive/5 border-destructive/20">
               <CardHeader>
                 <CardTitle className="font-serif text-lg text-destructive flex items-center">
-                  <Trash2 className="h-5 w-5 mr-2" />
+                  <AlertTriangle className="h-5 w-5 mr-2" />
                   Zone dangereuse
                 </CardTitle>
               </CardHeader>
@@ -203,13 +267,36 @@ export default function Settings() {
                 <div className="space-y-2">
                   <h3 className="font-medium text-foreground">Supprimer mon compte</h3>
                   <p className="text-sm text-muted-foreground">
-                    Cette action est irréversible. Tous vos souvenirs seront définitivement supprimés.
+                    Cette action est irréversible. Tous vos souvenirs ({memories.length}) seront définitivement supprimés.
                   </p>
                 </div>
-                <Button variant="destructive">
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Supprimer mon compte
-                </Button>
+                
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive">
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Supprimer mon compte
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Cette action est irréversible. Tous vos {memories.length} souvenirs seront définitivement supprimés.
+                        Voulez-vous d'abord exporter vos données ?
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteAccount}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Oui, supprimer
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </CardContent>
             </Card>
           </div>

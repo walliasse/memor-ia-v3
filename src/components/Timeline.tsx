@@ -35,22 +35,8 @@ const mockMemories = [
   },
 ];
 
-interface TimelineProps {
-  searchQuery?: string;
-}
-
-const Timeline = ({ searchQuery }: TimelineProps) => {
+const Timeline = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-
-  const filteredMemories = mockMemories.filter(memory => {
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      memory.title.toLowerCase().includes(query) ||
-      memory.content.toLowerCase().includes(query) ||
-      memory.location?.toLowerCase().includes(query)
-    );
-  });
 
   const formatMonth = (date: Date) => {
     return date.toLocaleDateString('fr-FR', {
@@ -92,22 +78,10 @@ const Timeline = ({ searchQuery }: TimelineProps) => {
         </Button>
       </div>
 
-      {/* Messages d'état */}
-      {searchQuery && (
-        <div className="text-center py-3 sm:py-4">
-          <p className="text-sm sm:text-base text-muted-foreground px-2">
-            {filteredMemories.length > 0 
-              ? `${filteredMemories.length} souvenir(s) trouvé(s) pour "${searchQuery}"`
-              : `Aucun souvenir trouvé pour "${searchQuery}"`
-            }
-          </p>
-        </div>
-      )}
-
       {/* Grille des souvenirs */}
-      {filteredMemories.length > 0 ? (
+      {mockMemories.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-          {filteredMemories.map((memory) => (
+          {mockMemories.map((memory) => (
             <MemoryCard 
               key={memory.id} 
               memory={memory}
@@ -118,7 +92,7 @@ const Timeline = ({ searchQuery }: TimelineProps) => {
             />
           ))}
         </div>
-      ) : !searchQuery ? (
+      ) : (
         <div className="text-center py-8 sm:py-12">
           <div className="bg-gradient-memory rounded-lg p-6 sm:p-8 max-w-md mx-auto shadow-soft">
             <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-2">
@@ -132,7 +106,7 @@ const Timeline = ({ searchQuery }: TimelineProps) => {
             </Button>
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };

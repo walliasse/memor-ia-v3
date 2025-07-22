@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
 import WelcomeSection from "@/components/WelcomeSection";
 import Timeline from "@/components/Timeline";
@@ -10,6 +11,7 @@ const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [hasMemories, setHasMemories] = useState(false); // Commencer par la page d'accueil
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleAddMemory = () => {
     setShowMemoryForm(true);
@@ -33,12 +35,8 @@ const Index = () => {
   };
 
   const handleGetStarted = () => {
-    setHasMemories(true);
-    // Scroll vers la timeline ou ouvrir le formulaire
-    const timelineElement = document.getElementById('timeline');
-    if (timelineElement) {
-      timelineElement.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Rediriger vers la page des souvenirs au lieu de changer l'état local
+    navigate("/souvenirs");
   };
 
   return (

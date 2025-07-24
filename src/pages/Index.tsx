@@ -1,40 +1,18 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Header from "@/components/Header";
 import WelcomeSection from "@/components/WelcomeSection";
-import Timeline from "@/components/Timeline";
-import MemoryForm from "@/components/MemoryForm";
-import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
-  const [showMemoryForm, setShowMemoryForm] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [hasMemories, setHasMemories] = useState(false); // Commencer par la page d'accueil
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const { user, loading, isAuthenticated } = useAuth();
+  const { loading, isAuthenticated } = useAuth();
 
-  const handleAddMemory = () => {
-    setShowMemoryForm(true);
-  };
-
-  const handleSaveMemory = (memoryData: any) => {
-    // TODO: Sauvegarder en base de données via Supabase
-    console.log('Nouveau souvenir:', memoryData);
-    
-    toast({
-      title: "Souvenir sauvegardé !",
-      description: "Votre moment précieux a été ajouté à votre journal.",
-    });
-    
-    setShowMemoryForm(false);
-    setHasMemories(true);
-  };
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-  };
+  // Rediriger les utilisateurs connectés vers /souvenirs
+  useEffect(() => {
+    if (!loading && isAuthenticated) {
+      navigate("/souvenirs", { replace: true });
+    }
+  }, [isAuthenticated, loading, navigate]);
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
@@ -44,43 +22,22 @@ const Index = () => {
     }
   };
 
+  // Afficher un loader pendant la vérification d'auth
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Page d'accueil uniquement pour les non-connectés
   return (
     <div className="min-h-screen bg-background">
-      {hasMemories && (
-        <Header 
-          onSearch={handleSearch}
-          onAddMemory={handleAddMemory}
-        />
-      )}
-
-      {!hasMemories ? (
-        <WelcomeSection onGetStarted={handleGetStarted} />
-      ) : (
-        <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8" id="timeline">
-          <Timeline searchQuery={searchQuery} />
-        </main>
-      )}
-
-      {showMemoryForm && (
-        <MemoryForm 
-          onSave={handleSaveMemory}
-          onCancel={() => setShowMemoryForm(false)}
-        />
-      )}
-
-      {/* Debug info - temporaire pour tester Supabase */}
-      <div className="fixed bottom-4 right-4 bg-card p-3 rounded-lg shadow text-xs space-y-1 max-w-48">
-        <div>Auth: {loading ? 'Loading...' : isAuthenticated ? 'Connecté' : 'Non connecté'}</div>
-        {user && <div>User: {user.email}</div>}
-        {!isAuthenticated && !loading && (
-          <button 
-            onClick={() => navigate("/login")}
-            className="text-primary underline text-xs"
-          >
-            Se connecter
-          </button>
-        )}
-      </div>
+      <WelcomeSection onGetStarted={handleGetStarted} />
     </div>
   );
 };

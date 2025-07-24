@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bell, Shield, Download, Trash2, LogOut, AlertTriangle, Palette } from "lucide-react";
+import { Bell, Shield, Download, Trash2, LogOut, AlertTriangle, Palette, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import Header from "@/components/Header";
 import ProfileSidebar from "@/components/ProfileSidebar";
+import ImportDataForm from "@/components/ImportDataForm";
 import { useAuth } from "@/hooks/useAuth";
 import { useMemories } from "@/hooks/useMemories";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -82,7 +83,7 @@ export default function Settings() {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <Header title="Réglages" />
+      <Header title="Réglages" showBack={true} />
       
       <div className="flex">
         <ProfileSidebar activeTab="settings" />
@@ -217,6 +218,19 @@ export default function Settings() {
                     Télécharger mes données
                   </Button>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Import depuis v1 */}
+            <Card className="bg-card shadow-soft border-border/50">
+              <CardHeader>
+                <CardTitle className="font-serif text-lg text-foreground flex items-center">
+                  <Upload className="h-5 w-5 mr-2 text-primary" />
+                  Import depuis memor.ia v1
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImportDataForm />
               </CardContent>
             </Card>
 

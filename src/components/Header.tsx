@@ -1,28 +1,42 @@
-import { User, Moon, Sun } from "lucide-react";
+import { User, Moon, Sun, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useNavigation } from "@/contexts/NavigationContext";
 
 interface HeaderProps {
   title?: string;
+  showBack?: boolean;
 }
 
-const Header = ({ title = "Souvenirs" }: HeaderProps) => {
+const Header = ({ title = "Souvenirs", showBack = false }: HeaderProps) => {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const { getBackPath } = useNavigation();
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 dark:bg-background/95 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
-          {/* Logo à gauche */}
+          {/* Logo à gauche ou flèche de retour */}
           <div className="flex items-center space-x-2">
-            <h1 
-              className="text-xl sm:text-2xl font-serif font-semibold text-primary dark:text-amber-400 cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => navigate("/")}
-            >
-              memor.ia
-            </h1>
+            {showBack ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => navigate(getBackPath())}
+                className="h-9 w-9 sm:h-10 sm:w-10"
+              >
+                <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+              </Button>
+            ) : (
+              <h1 
+                className="text-xl sm:text-2xl font-serif font-semibold text-primary dark:text-amber-400 cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => navigate("/")}
+              >
+                memor.ia
+              </h1>
+            )}
           </div>
 
           {/* Titre centré */}

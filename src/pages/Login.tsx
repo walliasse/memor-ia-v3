@@ -119,6 +119,11 @@ export default function Login() {
                 }
               </Button>
             </div>
+            <p className="text-sm text-center mt-4">
+              <a href="/forgot-password" className="text-primary underline">
+                Mot de passe oublié ?
+              </a>
+            </p>
           </CardContent>
         </Card>
 

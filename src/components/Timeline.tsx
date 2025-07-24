@@ -27,6 +27,14 @@ const Timeline = () => {
     setCurrentMonth(prev => {
       const newDate = new Date(prev);
       newDate.setMonth(prev.getMonth() + 1);
+      
+      // Ne pas aller au-delà du mois actuel
+      const now = new Date();
+      if (newDate.getFullYear() > now.getFullYear() || 
+          (newDate.getFullYear() === now.getFullYear() && newDate.getMonth() > now.getMonth())) {
+        return prev;
+      }
+      
       return newDate;
     });
   };
@@ -67,7 +75,17 @@ const Timeline = () => {
           {formatMonth(currentMonth)}
         </h2>
         
-        <Button variant="ghost" size="icon" onClick={nextMonth} className="h-9 w-9 sm:h-10 sm:w-10">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          onClick={nextMonth} 
+          className="h-9 w-9 sm:h-10 sm:w-10"
+          disabled={(() => {
+            const now = new Date();
+            return currentMonth.getFullYear() >= now.getFullYear() && 
+                   currentMonth.getMonth() >= now.getMonth();
+          })()}
+        >
           <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
       </div>

@@ -3,19 +3,19 @@ import { BookOpen, Sailboat, PlusCircle } from "lucide-react";
 
 const tabs = [
   {
-    to: "/souvenirs",
-    label: "Souvenirs",
-    icon: BookOpen,
-  },
-  {
     to: "/nouveau",
-    label: "Ecrire",
+    label: "Écrire",
     icon: PlusCircle,
   },
   {
     to: "/recherche",
     label: "Naviguer",
     icon: Sailboat,
+  },
+  {
+    to: "/souvenirs",
+    label: "Souvenirs",
+    icon: BookOpen,
   },
 ];
 

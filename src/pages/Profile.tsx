@@ -62,7 +62,7 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header title="Profil" />
+      <Header title="Profil" showBack={true} />
       
       <div className="flex min-h-screen bg-background">
         <ProfileSidebar activeTab="profile" />

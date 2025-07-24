@@ -17,6 +17,15 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
     });
   };
 
+  const formatDateTitle = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    });
+  };
+
   // Générer un titre à partir du contenu
   const getTitle = (content: string) => {
     const words = content.trim().split(' ');
@@ -30,24 +39,18 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
       onClick={onClick}
     >
       <CardContent className="p-4 sm:p-6">
-        {/* Header avec date et lieu */}
-        <div className="flex items-start sm:items-center justify-between mb-3 text-xs sm:text-sm text-muted-foreground gap-2">
-          <div className="flex items-center space-x-1 sm:space-x-2 min-w-0">
-            <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-            <span className="truncate">{formatDate(memory.date)}</span>
-          </div>
-          {memory.location && (
-            <div className="flex items-center space-x-1 flex-shrink-0">
-              <MapPin className="h-3 w-3" />
-              <span className="text-xs truncate max-w-20 sm:max-w-none">{memory.location}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Titre généré */}
-        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-2">
-          {getTitle(memory.content)}
+        {/* Titre avec la date */}
+        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground dark:text-amber-100 mb-3 group-hover:text-primary transition-colors line-clamp-1 capitalize">
+          {formatDateTitle(memory.date)}
         </h3>
+
+        {/* Localisation si présente */}
+        {memory.location && (
+          <div className="flex items-center text-xs sm:text-sm text-muted-foreground dark:text-amber-200/70 mb-3">
+            <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+            <span>{memory.location}</span>
+          </div>
+        )}
 
         {/* Image si présente */}
         {memory.image_url && (

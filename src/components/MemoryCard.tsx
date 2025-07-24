@@ -61,13 +61,13 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
         )}
 
         {/* Contenu tronqué */}
-        <p className="text-sm sm:text-base text-foreground/80 leading-relaxed line-clamp-3">
+        <p className="text-sm sm:text-base text-foreground/80 dark:text-amber-100/90 leading-relaxed line-clamp-3">
           {memory.content}
         </p>
 
         {/* Indicateur d'image */}
         {memory.image_url && (
-          <div className="flex items-center mt-3 text-xs text-muted-foreground">
+          <div className="flex items-center mt-3 text-xs text-muted-foreground dark:text-amber-200/70">
             <ImageIcon className="h-3 w-3 mr-1" />
             <span>Avec image</span>
           </div>

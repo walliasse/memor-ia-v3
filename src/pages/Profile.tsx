@@ -162,7 +162,7 @@ export default function Profile() {
                           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                           disabled={!isEditing}
                           placeholder="Votre nom"
-                          className="bg-background/50 border-border focus:bg-background"
+                          className="bg-background/50 border-border focus:bg-background dark:bg-input dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground dark:disabled:bg-muted dark:disabled:text-muted-foreground"
                         />
                       </div>
 
@@ -180,14 +180,14 @@ export default function Profile() {
 
                     <div className="space-y-2">
                       <Label htmlFor="bio">Biographie</Label>
-                      <Textarea
-                        id="bio"
-                        value={formData.bio}
-                        onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                        disabled={!isEditing}
-                        placeholder="Parlez-nous de vous..."
-                        className="min-h-24 bg-background/50 border-border focus:bg-background resize-none"
-                      />
+                                              <Textarea
+                          id="bio"
+                          value={formData.bio}
+                          onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                          disabled={!isEditing}
+                          placeholder="Parlez-nous de vous..."
+                          className="min-h-24 bg-background/50 border-border focus:bg-background resize-none dark:bg-input dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground dark:disabled:bg-muted dark:disabled:text-muted-foreground"
+                        />
                     </div>
 
                     {isEditing && (

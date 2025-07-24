@@ -12,13 +12,13 @@ const Header = ({ title = "Souvenirs" }: HeaderProps) => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
+    <header className="sticky top-0 z-50 bg-background/80 dark:bg-background/95 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           {/* Logo à gauche */}
           <div className="flex items-center space-x-2">
             <h1 
-              className="text-xl sm:text-2xl font-serif font-semibold text-primary cursor-pointer hover:opacity-80 transition-opacity"
+              className="text-xl sm:text-2xl font-serif font-semibold text-primary dark:text-amber-400 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => navigate("/")}
             >
               memor.ia
@@ -27,7 +27,7 @@ const Header = ({ title = "Souvenirs" }: HeaderProps) => {
 
           {/* Titre centré */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            <h2 className="text-lg sm:text-xl font-serif font-semibold text-foreground">
+            <h2 className="text-lg sm:text-xl font-serif font-semibold text-foreground dark:text-amber-100">
               {title}
             </h2>
           </div>

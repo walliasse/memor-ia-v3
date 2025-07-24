@@ -80,7 +80,7 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
                     value={formData.location}
                     onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
                     placeholder="Où étiez-vous ?"
-                    className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
+                    className="bg-background/50 border-border focus:bg-background h-10 sm:h-11 dark:bg-input dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground"
                   />
                 </div>
               </div>
@@ -96,7 +96,7 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
+                  className="bg-background/50 border-border focus:bg-background h-10 sm:h-11 dark:bg-input dark:border-border dark:text-foreground"
                 />
                 {imagePreview && (
                   <div className="mt-3 rounded-lg overflow-hidden">
@@ -119,7 +119,7 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
                   value={formData.content}
                   onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
                   placeholder="Un moment, une pensée, un souvenir..."
-                  className="min-h-32 sm:min-h-40 bg-background/50 border-border focus:bg-background resize-none"
+                  className="min-h-32 sm:min-h-40 bg-background/50 border-border focus:bg-background resize-none dark:bg-input dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground"
                   required
                 />
               </div>

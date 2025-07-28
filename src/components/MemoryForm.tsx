@@ -125,21 +125,13 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
               </div>
 
               {/* Actions */}
-              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <div className="pt-4">
                 <Button 
                   type="submit" 
-                  className="flex-1 bg-gradient-gold text-primary-foreground hover:opacity-90 min-h-11"
+                  className="w-full bg-gradient-gold text-primary-foreground hover:opacity-90 min-h-11"
                 >
                   <Save className="h-4 w-4 mr-2" />
                   <span className="text-sm sm:text-base">Sauvegarder le souvenir</span>
-                </Button>
-                <Button 
-                  type="button" 
-                  variant="outline" 
-                  onClick={onCancel}
-                  className="flex-1 min-h-11"
-                >
-                  <span className="text-sm sm:text-base">Annuler</span>
                 </Button>
               </div>
             </form>

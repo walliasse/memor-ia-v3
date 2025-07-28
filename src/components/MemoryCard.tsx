@@ -1,6 +1,6 @@
 import { Calendar, MapPin, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Memory } from "@/lib/supabase";
+import { Memory } from "@/lib/types";
 
 interface MemoryCardProps {
   memory: Memory;

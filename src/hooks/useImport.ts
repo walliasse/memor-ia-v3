@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/integrations/supabase/client'
 import { useAuth } from './useAuth'
 import { useToast } from './use-toast'
 import type { ExportData, ImportProgress, ImportResult, SouvenirData, UserProfile } from '@/types/import'

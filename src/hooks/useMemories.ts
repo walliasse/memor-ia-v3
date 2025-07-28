@@ -98,6 +98,82 @@ export function useMemories() {
     }
   }
 
+  // Mettre à jour un souvenir
+  const updateMemory = async (id: string, updates: { content: string; date: string; location?: string }) => {
+    if (!user) return { success: false, error: 'Non authentifié' }
+
+    try {
+      setSaving(true)
+      const { data, error } = await supabase
+        .from('memories')
+        .update(updates)
+        .eq('id', id)
+        .eq('user_id', user.id)
+        .select()
+        .single()
+
+      if (error) throw error
+
+      // Mettre à jour la liste locale
+      setMemories(prev => prev.map(memory => 
+        memory.id === id ? data : memory
+      ))
+
+      toast({
+        title: "Souvenir mis à jour !",
+        description: "Vos modifications ont été sauvegardées.",
+      })
+
+      return { success: true, data }
+    } catch (error: any) {
+      console.error('Erreur lors de la mise à jour:', error)
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de mettre à jour le souvenir.",
+        variant: "destructive"
+      })
+      return { success: false, error: error.message }
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  // Supprimer un souvenir
+  const deleteMemory = async (id: string) => {
+    if (!user) return { success: false, error: 'Non authentifié' }
+
+    try {
+      setSaving(true)
+      const { error } = await supabase
+        .from('memories')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id)
+
+      if (error) throw error
+
+      // Retirer de la liste locale
+      setMemories(prev => prev.filter(memory => memory.id !== id))
+
+      toast({
+        title: "Souvenir supprimé",
+        description: "Le souvenir a été supprimé de votre journal.",
+      })
+
+      return { success: true }
+    } catch (error: any) {
+      console.error('Erreur lors de la suppression:', error)
+      toast({
+        title: "Erreur",
+        description: error.message || "Impossible de supprimer le souvenir.",
+        variant: "destructive"
+      })
+      return { success: false, error: error.message }
+    } finally {
+      setSaving(false)
+    }
+  }
+
   // Charger les souvenirs au montage et quand l'utilisateur change
   useEffect(() => {
     fetchMemories()
@@ -108,6 +184,8 @@ export function useMemories() {
     loading,
     saving,
     createMemory,
+    updateMemory,
+    deleteMemory,
     refetch: fetchMemories
   }
-} 
+}

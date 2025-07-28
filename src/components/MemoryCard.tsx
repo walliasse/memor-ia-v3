@@ -1,13 +1,16 @@
 import { Calendar, MapPin, Image as ImageIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Memory } from "@/lib/types";
+import MemoryActionsMenu from "./MemoryActionsMenu";
 
 interface MemoryCardProps {
   memory: Memory;
-  onClick?: () => void;
+  onView: () => void;
+  onEdit: () => void;
+  onDelete: () => void;
 }
 
-const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
+const MemoryCard = ({ memory, onView, onEdit, onDelete }: MemoryCardProps) => {
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('fr-FR', {
@@ -35,10 +38,14 @@ const MemoryCard = ({ memory, onClick }: MemoryCardProps) => {
 
   return (
     <Card 
-      className="group hover:shadow-warm transition-all duration-300 cursor-pointer bg-gradient-memory border-border/50"
-      onClick={onClick}
+      className="group hover:shadow-warm transition-all duration-300 cursor-pointer bg-gradient-memory border-border/50 relative"
+      onClick={onView}
     >
       <CardContent className="p-4 sm:p-6">
+        {/* Menu d'actions */}
+        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+          <MemoryActionsMenu onEdit={onEdit} onDelete={onDelete} />
+        </div>
         {/* Titre avec la date */}
         <h3 className="font-serif text-base sm:text-lg font-medium text-foreground dark:text-amber-100 mb-3 group-hover:text-primary transition-colors line-clamp-1 capitalize">
           {formatDateTitle(memory.date)}

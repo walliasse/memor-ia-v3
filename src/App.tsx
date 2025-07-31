@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import Memories from "./pages/Memories";
 import NewMemory from "./pages/NewMemory";
 import AiSearch from "./pages/AiSearch";
+import NavigateHome from "./pages/NavigateHome";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
@@ -23,7 +24,7 @@ function AppContent() {
   const location = useLocation();
   
   // Pages où afficher les onglets mobiles
-  const showMobileTabs = ["/souvenirs", "/nouveau", "/recherche"].includes(location.pathname);
+  const showMobileTabs = ["/souvenirs", "/nouveau", "/naviguer", "/navigate"].includes(location.pathname);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -35,6 +36,8 @@ function AppContent() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/souvenirs" element={<Memories />} />
           <Route path="/nouveau" element={<NewMemory />} />
+          <Route path="/naviguer" element={<NavigateHome />} />
+          <Route path="/navigate" element={<AiSearch />} />
           <Route path="/recherche" element={<AiSearch />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />

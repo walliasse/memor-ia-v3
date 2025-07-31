@@ -58,27 +58,24 @@ export default function AiSearch() {
     <div className="min-h-screen bg-background pb-20">
       <Header title="Naviguer" />
 
-      <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6">
+             <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6 max-w-2xl">
         {/* Section de recherche principale */}
         <Card className="bg-gradient-memory shadow-soft border-border/50">
-          <CardHeader className="pb-4">
-            <CardTitle className="font-serif text-lg sm:text-xl text-foreground flex items-center">
-              <Sailboat className="h-5 w-5 mr-2 text-primary" />
-              Voyage dans tes souvenirs, navigue dans ta mémoire...
-            </CardTitle>
-            <p className="text-sm text-muted-foreground">
-              Posez vos questions en langage naturel et obtenez des réponses intelligentes basées sur vos souvenirs
-            </p>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="relative">
-              <Textarea
-                placeholder="Par exemple : 'Combien de fois je suis allé au bar en mai ?' ou 'Raconte-moi mes vacances à Lisbonne' ou 'Résume ce que j'ai fait en juin'"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                className="min-h-20 bg-background/50 border-border focus:bg-background resize-none pr-12"
-              />
+                     <CardHeader className="pb-4">
+             <CardTitle className="font-serif text-lg sm:text-xl text-foreground flex items-center justify-center">
+               <Sailboat className="h-5 w-5 mr-2 text-primary" />
+               Voyage dans tes souvenirs, navigue dans ta mémoire...
+             </CardTitle>
+           </CardHeader>
+                     <CardContent className="space-y-4">
+             <div className="relative">
+               <Textarea
+                 placeholder="Posez votre question en langage naturel..."
+                 value={searchQuery}
+                 onChange={(e) => setSearchQuery(e.target.value)}
+                 onKeyDown={handleKeyDown}
+                 className="min-h-20 bg-background/50 border-border focus:bg-background resize-none pr-12 text-center"
+               />
               <div className="absolute bottom-2 right-2 flex gap-2">
                 {searchQuery && (
                   <Button
@@ -125,68 +122,9 @@ export default function AiSearch() {
           </Card>
         )}
 
-        {/* Suggestions de recherche */}
-        {!lastResponse && !loading && (
-          <Card className="bg-card/50 border-border/50">
-            <CardHeader className="pb-4">
-              <CardTitle className="font-serif text-base sm:text-lg text-foreground flex items-center">
-                <MessageCircle className="h-4 w-4 mr-2 text-accent" />
-                Exemples de questions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {suggestedQueries.map((query, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    className="justify-start text-left h-auto py-3 px-4 bg-background/50 hover:bg-background border-border/50 hover:border-primary/30"
-                    onClick={() => handleSuggestedQuery(query)}
-                  >
-                    <Search className="h-3 w-3 mr-2 text-muted-foreground flex-shrink-0" />
-                    <span className="text-sm text-foreground">{query}</span>
-                  </Button>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                 {/* Section supprimée pour une interface plus épurée */}
 
-        {/* Information sur la fonctionnalité */}
-        {!lastResponse && !loading && (
-          <Card className="bg-gradient-warm shadow-soft border-border/50">
-            <CardContent className="py-6">
-              <div className="text-center space-y-3">
-                <h3 className="font-serif text-base sm:text-lg font-medium text-foreground">
-                  🤖 Assistant IA Narratif
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  Notre assistant IA analyse vos souvenirs et génère des réponses intelligentes. 
-                  Il peut compter, raconter, résumer ou lister vos souvenirs selon vos besoins. 
-                  Posez vos questions en langage naturel !
-                </p>
-                <div className="flex flex-wrap justify-center gap-2 mt-4">
-                  <Badge variant="secondary" className="text-xs">
-                    <Target className="h-3 w-3 mr-1" />
-                    Comptage
-                  </Badge>
-                  <Badge variant="secondary" className="text-xs">
-                    <BookOpen className="h-3 w-3 mr-1" />
-                    Narration
-                  </Badge>
-                  <Badge variant="secondary" className="text-xs">
-                    <Sparkles className="h-3 w-3 mr-1" />
-                    Résumé
-                  </Badge>
-                  <Badge variant="secondary" className="text-xs">
-                    <MessageCircle className="h-3 w-3 mr-1" />
-                    Liste
-                  </Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                 {/* Section supprimée pour une interface plus épurée */}
       </main>
     </div>
   );

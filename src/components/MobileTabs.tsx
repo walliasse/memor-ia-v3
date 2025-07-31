@@ -8,7 +8,7 @@ const tabs = [
     icon: PlusCircle,
   },
   {
-    to: "/recherche",
+    to: "/naviguer",
     label: "Naviguer",
     icon: Sailboat,
   },

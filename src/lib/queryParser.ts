@@ -1,169 +1,204 @@
 import { ParsedQuery, QueryFilters } from './types'
 
-// Mots-clés pour les saisons
-const SEASON_KEYWORDS = {
-  'printemps': { start: '03-21', end: '06-20' },
-  'été': { start: '06-21', end: '09-22' },
-  'automne': { start: '09-23', end: '12-20' },
-  'hiver': { start: '12-21', end: '03-20' },
-  'spring': { start: '03-21', end: '06-20' },
-  'summer': { start: '06-21', end: '09-22' },
-  'fall': { start: '09-23', end: '12-20' },
-  'autumn': { start: '09-23', end: '12-20' },
-  'winter': { start: '12-21', end: '03-20' }
-}
-
-// Mots-clés pour les lieux flous
-const FUZZY_LOCATIONS = {
-  'le sud': ['sud de la france', 'provence', 'languedoc', 'côte d\'azur'],
-  'le nord': ['nord de la france', 'hauts-de-france', 'normandie'],
-  'l\'est': ['est de la france', 'alsace', 'lorraine', 'bourgogne'],
-  'l\'ouest': ['ouest de la france', 'bretagne', 'pays de la loire'],
-  'paris': ['paris', 'île-de-france'],
-  'la montagne': ['alpes', 'pyrennées', 'massif central', 'jura'],
-  'la mer': ['côte atlantique', 'côte méditerranéenne', 'bretagne', 'normandie'],
-  'la campagne': ['rural', 'village', 'campagne']
-}
-
-// Mots-clés pour les activités
-const ACTIVITY_KEYWORDS = [
-  'voyage', 'vacances', 'weekend', 'excursion', 'randonnée', 'plage', 'ski',
-  'restaurant', 'musée', 'concert', 'festival', 'sport', 'nager', 'manger',
-  'visiter', 'découvrir', 'explorer', 'se promener', 'faire du shopping'
-]
-
-// Mots-clés pour les émotions
-const EMOTION_KEYWORDS = [
-  'joie', 'bonheur', 'excitation', 'sérénité', 'nostalgie', 'tristesse',
-  'colère', 'peur', 'surprise', 'amour', 'amitié', 'inspiration'
-]
-
-export function parseQuery(query: string): ParsedQuery {
-  const originalQuery = query.toLowerCase().trim()
-  const filters: QueryFilters = {}
-  let vectorQuery = originalQuery
-  let confidence = 1.0
-
-  // Extraction des années
-  const yearMatches = originalQuery.match(/(\d{4})/g)
-  if (yearMatches) {
-    const year = parseInt(yearMatches[0])
-    filters.dateRange = {
-      start: `${year}-01-01`,
-      end: `${year}-12-31`
+export class QueryParser {
+  // Analyser une requête utilisateur pour extraire les filtres et intentions
+  parseQuery(query: string): ParsedQuery {
+    const originalQuery = query.trim()
+    const queryLower = originalQuery.toLowerCase()
+    
+    // Extraire les filtres de date
+    const dateFilters = this.extractDateFilters(queryLower)
+    
+    // Extraire les lieux
+    const locations = this.extractLocations(queryLower)
+    
+    // Extraire les saisons
+    const seasons = this.extractSeasons(queryLower)
+    
+    // Extraire les activités/émotions
+    const activities = this.extractActivities(queryLower)
+    const emotions = this.extractEmotions(queryLower)
+    
+    // Déterminer le type de requête
+    const queryType = this.determineQueryType(queryLower)
+    
+    // Créer les filtres
+    const filters: QueryFilters = {
+      ...(dateFilters && { dateRange: dateFilters }),
+      ...(locations.length > 0 && { locations }),
+      ...(seasons.length > 0 && { seasons }),
+      ...(activities.length > 0 && { activities }),
+      ...(emotions.length > 0 && { emotions })
     }
-    vectorQuery = vectorQuery.replace(/\d{4}/g, '')
-  }
-
-  // Extraction des saisons
-  const seasons: string[] = []
-  for (const [season, dates] of Object.entries(SEASON_KEYWORDS)) {
-    if (originalQuery.includes(season)) {
-      seasons.push(season)
-      if (yearMatches && filters.dateRange) {
-        const year = parseInt(yearMatches[0])
-        filters.dateRange.start = `${year}-${dates.start}`
-        filters.dateRange.end = `${year}-${dates.end}`
-      }
-      vectorQuery = vectorQuery.replace(new RegExp(season, 'g'), '')
+    
+    // Créer la requête vectorielle (sans les mots de filtrage)
+    const vectorQuery = this.createVectorQuery(originalQuery, filters)
+    
+    // Calculer la confiance (basique pour l'instant)
+    const confidence = this.calculateConfidence(filters, queryType)
+    
+    return {
+      originalQuery,
+      filters,
+      vectorQuery,
+      confidence
     }
   }
-  if (seasons.length > 0) {
-    filters.seasons = seasons
-  }
-
-  // Extraction des lieux
-  const locations: string[] = []
   
-  // Lieux flous
-  for (const [fuzzyLocation, expandedLocations] of Object.entries(FUZZY_LOCATIONS)) {
-    if (originalQuery.includes(fuzzyLocation)) {
-      locations.push(...expandedLocations)
-      vectorQuery = vectorQuery.replace(fuzzyLocation, '')
-    }
-  }
-
-  // Lieux spécifiques (mots avec majuscules ou après "à", "dans", "sur")
-  const locationPatterns = [
-    /(?:à|dans|sur)\s+([a-zA-ZÀ-ÿ\s]+?)(?:\s|$)/g,
-    /([A-Z][a-zA-ZÀ-ÿ\s]+?)(?:\s|$)/g
-  ]
-
-  for (const pattern of locationPatterns) {
-    const matches = [...originalQuery.matchAll(pattern)]
-    for (const match of matches) {
-      const location = match[1]?.trim()
-      if (location && location.length > 2 && !locations.includes(location)) {
-        locations.push(location)
+  private extractDateFilters(query: string): { start: string; end: string } | null {
+    const datePatterns = [
+      // Années spécifiques
+      { pattern: /(\d{4})/g, type: 'year' },
+      // Mois
+      { pattern: /(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)/g, type: 'month' },
+      // Expressions temporelles
+      { pattern: /(cette année|cette semaine|ce mois|l'année dernière|l'été dernier|l'hiver dernier)/g, type: 'relative' },
+      // Périodes
+      { pattern: /(en mai|en juin|en juillet|en août|en septembre|en octobre|en novembre|en décembre)/g, type: 'month' }
+    ]
+    
+    let startDate: string | null = null
+    let endDate: string | null = null
+    
+    for (const { pattern, type } of datePatterns) {
+      const matches = query.match(pattern)
+      if (matches) {
+        if (type === 'year') {
+          const year = matches[0]
+          startDate = `${year}-01-01`
+          endDate = `${year}-12-31`
+        } else if (type === 'month') {
+          const monthMap: { [key: string]: string } = {
+            'janvier': '01', 'février': '02', 'mars': '03', 'avril': '04',
+            'mai': '05', 'juin': '06', 'juillet': '07', 'août': '08',
+            'septembre': '09', 'octobre': '10', 'novembre': '11', 'décembre': '12'
+          }
+          
+          const currentYear = new Date().getFullYear()
+          const month = monthMap[matches[0].replace('en ', '')]
+          if (month) {
+            startDate = `${currentYear}-${month}-01`
+            endDate = `${currentYear}-${month}-31`
+          }
+        } else if (type === 'relative') {
+          const now = new Date()
+          if (matches[0].includes('année')) {
+            startDate = `${now.getFullYear()}-01-01`
+            endDate = `${now.getFullYear()}-12-31`
+          } else if (matches[0].includes('mois')) {
+            const firstDay = new Date(now.getFullYear(), now.getMonth(), 1)
+            const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0)
+            startDate = firstDay.toISOString().split('T')[0]
+            endDate = lastDay.toISOString().split('T')[0]
+          }
+        }
+        break
       }
     }
+    
+    return startDate && endDate ? { start: startDate, end: endDate } : null
   }
-
-  if (locations.length > 0) {
-    filters.locations = locations
+  
+  private extractLocations(query: string): string[] {
+    const locationPatterns = [
+      /(paris|lyon|marseille|bordeaux|toulouse|nice|nantes|strasbourg|montpellier|rennes)/g,
+      /(lisbonne|rome|madrid|barcelone|londres|berlin|amsterdam|prague|budapest|vienne)/g,
+      /(new york|los angeles|san francisco|chicago|miami|las vegas|seattle|boston)/g,
+      /(tokyo|kyoto|osaka|séoul|singapour|hong kong|bangkok|hanoi|ho chi minh)/g
+    ]
+    
+    const locations: string[] = []
+    
+    for (const pattern of locationPatterns) {
+      const matches = query.match(pattern)
+      if (matches) {
+        locations.push(...matches.map(m => m.charAt(0).toUpperCase() + m.slice(1)))
+      }
+    }
+    
+    return [...new Set(locations)] // Supprimer les doublons
   }
-
-  // Extraction des activités
-  const activities: string[] = []
-  for (const activity of ACTIVITY_KEYWORDS) {
-    if (originalQuery.includes(activity)) {
-      activities.push(activity)
-      vectorQuery = vectorQuery.replace(new RegExp(activity, 'g'), '')
+  
+  private extractSeasons(query: string): string[] {
+    const seasons = ['printemps', 'été', 'automne', 'hiver']
+    return seasons.filter(season => query.includes(season))
+  }
+  
+  private extractActivities(query: string): string[] {
+    const activities = [
+      'voyage', 'restaurant', 'cinéma', 'théâtre', 'concert', 'musée', 'exposition',
+      'sport', 'course', 'vélo', 'randonnée', 'ski', 'plage', 'piscine',
+      'café', 'bar', 'club', 'fête', 'anniversaire', 'mariage',
+      'travail', 'bureau', 'réunion', 'formation', 'conférence'
+    ]
+    
+    return activities.filter(activity => query.includes(activity))
+  }
+  
+  private extractEmotions(query: string): string[] {
+    const emotions = [
+      'heureux', 'joyeux', 'content', 'satisfait', 'épanoui',
+      'triste', 'déprimé', 'mélancolique', 'nostalgique',
+      'stressé', 'anxieux', 'inquiet', 'nerveux',
+      'excité', 'enthousiaste', 'passionné', 'inspiré',
+      'calme', 'serein', 'paisible', 'détendu'
+    ]
+    
+    return emotions.filter(emotion => query.includes(emotion))
+  }
+  
+  private determineQueryType(query: string): 'count' | 'narrative' | 'summary' | 'list' {
+    if (query.includes('combien') || query.includes('fois') || query.includes('nombre')) {
+      return 'count'
+    } else if (query.includes('raconte') || query.includes('histoire') || query.includes('moment')) {
+      return 'narrative'
+    } else if (query.includes('résume') || query.includes('synthèse') || query.includes('résumé')) {
+      return 'summary'
+    } else {
+      return 'list'
     }
   }
-  if (activities.length > 0) {
-    filters.activities = activities
+  
+  private createVectorQuery(originalQuery: string, filters: QueryFilters): string {
+    // Supprimer les mots de filtrage pour créer une requête vectorielle plus pure
+    let vectorQuery = originalQuery
+    
+    // Supprimer les mots de date
+    vectorQuery = vectorQuery.replace(/\b(janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre)\b/gi, '')
+    vectorQuery = vectorQuery.replace(/\b(\d{4})\b/g, '')
+    vectorQuery = vectorQuery.replace(/\b(cette année|cette semaine|ce mois|l'année dernière|l'été dernier|l'hiver dernier)\b/gi, '')
+    
+    // Supprimer les mots de comptage
+    vectorQuery = vectorQuery.replace(/\b(combien|fois|nombre)\b/gi, '')
+    
+    // Nettoyer les espaces multiples
+    vectorQuery = vectorQuery.replace(/\s+/g, ' ').trim()
+    
+    return vectorQuery || originalQuery
   }
-
-  // Extraction des émotions
-  const emotions: string[] = []
-  for (const emotion of EMOTION_KEYWORDS) {
-    if (originalQuery.includes(emotion)) {
-      emotions.push(emotion)
-      vectorQuery = vectorQuery.replace(new RegExp(emotion, 'g'), '')
-    }
-  }
-  if (emotions.length > 0) {
-    filters.emotions = emotions
-  }
-
-  // Nettoyage de la requête vectorielle
-  vectorQuery = vectorQuery
-    .replace(/\s+/g, ' ')
-    .trim()
-
-  // Si la requête vectorielle est vide, utiliser la requête originale
-  if (!vectorQuery) {
-    vectorQuery = originalQuery
-    confidence = 0.8 // Moins de confiance car parsing incomplet
-  }
-
-  return {
-    originalQuery: query,
-    filters,
-    vectorQuery,
-    confidence
+  
+  private calculateConfidence(filters: QueryFilters, queryType: string): number {
+    let confidence = 0.5 // Base
+    
+    // Bonus pour les filtres de date
+    if (filters.dateRange) confidence += 0.2
+    
+    // Bonus pour les lieux
+    if (filters.locations && filters.locations.length > 0) confidence += 0.15
+    
+    // Bonus pour les saisons
+    if (filters.seasons && filters.seasons.length > 0) confidence += 0.1
+    
+    // Bonus pour les activités/émotions
+    if (filters.activities && filters.activities.length > 0) confidence += 0.1
+    if (filters.emotions && filters.emotions.length > 0) confidence += 0.1
+    
+    // Bonus pour le type de requête spécifique
+    if (queryType === 'count') confidence += 0.1
+    if (queryType === 'narrative') confidence += 0.15
+    
+    return Math.min(confidence, 1.0)
   }
 }
 
-// Fonction de fallback pour parsing simple
-export function parseQuerySimple(query: string): ParsedQuery {
-  return {
-    originalQuery: query,
-    filters: {},
-    vectorQuery: query,
-    confidence: 0.5
-  }
-}
-
-// Fonction pour valider les filtres extraits
-export function validateFilters(filters: QueryFilters): boolean {
-  if (filters.dateRange) {
-    const start = new Date(filters.dateRange.start)
-    const end = new Date(filters.dateRange.end)
-    if (isNaN(start.getTime()) || isNaN(end.getTime()) || start > end) {
-      return false
-    }
-  }
-  return true
-} 
+export const queryParser = new QueryParser() 

@@ -14,7 +14,6 @@ import { useMemories } from "@/hooks/useMemories";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useTravelSearch } from "@/hooks/useTravelSearch";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function Settings() {
@@ -32,7 +31,6 @@ export default function Settings() {
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { indexUserMemories, getSearchStats } = useTravelSearch();
 
   const handleSettingChange = (key: string, value: boolean | string) => {
     setSettings(prev => ({ ...prev, [key]: value }));

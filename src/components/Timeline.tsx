@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 import MemoryCard from "./MemoryCard";
 import MemoryDetailModal from "./MemoryDetailModal";
 import MemoryEditModal from "./MemoryEditModal";
@@ -9,6 +10,7 @@ import { useMemories } from "@/contexts/MemoriesContext";
 import { Memory } from "@/lib/types";
 
 const Timeline = () => {
+  const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedMemory, setSelectedMemory] = useState<Memory | null>(null);
   const [detailModalOpen, setDetailModalOpen] = useState(false);
@@ -150,7 +152,7 @@ const Timeline = () => {
                 {memories.length === 0 ? "Commencez à capturer vos moments précieux" : "Naviguez vers d'autres mois ou créez un nouveau souvenir"}
               </p>
               <Button 
-                onClick={() => window.location.href = '/nouveau'}
+                onClick={() => navigate('/nouveau')}
                 className="bg-gradient-gold text-primary-foreground hover:opacity-90 min-h-10"
               >
                 {memories.length === 0 ? "Créer votre premier souvenir" : "Créer un nouveau souvenir"}

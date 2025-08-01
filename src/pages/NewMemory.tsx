@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import MemoryForm from "@/components/MemoryForm";
 import Header from "@/components/Header";
-import { useMemories } from "@/hooks/useMemories";
+import { useMemories } from "@/contexts/MemoriesContext";
 
 interface MemoryFormData {
   content: string;

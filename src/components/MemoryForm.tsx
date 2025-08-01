@@ -1,10 +1,11 @@
 import { useState } from "react";
-import { Calendar, MapPin, Image as ImageIcon, Save, X } from "lucide-react";
+import { Calendar, MapPin, Image as ImageIcon, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { useDateBounds } from "@/hooks/useDateBounds";
 
 interface MemoryFormData {
   content: string;
@@ -20,6 +21,8 @@ interface MemoryFormProps {
 }
 
 const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) => {
+  const { minDate, maxDate, isDateValid, getErrorMessage } = useDateBounds();
+  
   const [formData, setFormData] = useState<MemoryFormData>({
     content: '',
     date: new Date().toISOString().split('T')[0],
@@ -27,6 +30,7 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
   });
 
   const [imagePreview, setImagePreview] = useState<string>('');
+  const [dateError, setDateError] = useState<string | null>(null);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -40,8 +44,27 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
     }
   };
 
+  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value;
+    setFormData(prev => ({ ...prev, date: newDate }));
+    
+    // Valider la date
+    const selectedDate = new Date(newDate);
+    const error = getErrorMessage(selectedDate);
+    setDateError(error);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Vérifier la validité de la date
+    const selectedDate = new Date(formData.date);
+    if (!isDateValid(selectedDate)) {
+      const error = getErrorMessage(selectedDate);
+      setDateError(error);
+      return;
+    }
+    
     if (formData.content) {
       onSave(formData);
     }
@@ -49,61 +72,56 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
 
   if (isFullPage) {
     return (
-      <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">
-        <Card className="w-full max-w-2xl mx-auto bg-gradient-memory shadow-warm">
-          <CardContent className="p-4 sm:p-6">
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+      <div className="container mx-auto px-4 py-4">
+        <Card className="w-full max-w-xl mx-auto bg-gradient-memory shadow-warm">
+          <CardContent className="p-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Date et lieu */}
-              <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="date" className="text-sm font-medium text-foreground flex items-center">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    Date
-                  </Label>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
                   <Input
                     id="date"
                     type="date"
                     value={formData.date}
-                    onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                    className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
+                    onChange={handleDateChange}
+                    min={minDate.toISOString().split('T')[0]}
+                    max={maxDate.toISOString().split('T')[0]}
+                    className={`bg-background/50 border-border focus:bg-background h-10 ${
+                      dateError ? 'border-red-500' : ''
+                    }`}
                     required
                   />
+                  {dateError && (
+                    <p className="text-xs text-red-500 mt-1">{dateError}</p>
+                  )}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="location" className="text-sm font-medium text-foreground flex items-center">
-                    <MapPin className="h-4 w-4 mr-2" />
-                    Lieu (optionnel)
-                  </Label>
+                <div className="space-y-1">
                   <Input
                     id="location"
                     value={formData.location}
                     onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                    placeholder="Où étiez-vous ?"
-                    className="bg-background/50 border-border focus:bg-background h-10 sm:h-11 dark:bg-input dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground"
+                    placeholder="Lieu"
+                    className="bg-background/50 border-border focus:bg-background h-10"
                   />
                 </div>
               </div>
 
               {/* Image */}
               <div className="space-y-2">
-                <Label htmlFor="image" className="text-sm font-medium text-foreground flex items-center">
-                  <ImageIcon className="h-4 w-4 mr-2" />
-                  Image (optionnelle)
-                </Label>
                 <Input
                   id="image"
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="bg-background/50 border-border focus:bg-background h-10 sm:h-11 dark:bg-input dark:border-border dark:text-foreground"
+                  className="bg-background/50 border-border focus:bg-background h-10"
                 />
                 {imagePreview && (
-                  <div className="mt-3 rounded-lg overflow-hidden">
+                  <div className="mt-2 rounded-lg overflow-hidden">
                     <img 
                       src={imagePreview} 
                       alt="Aperçu"
-                      className="w-full h-40 sm:h-48 object-cover"
+                      className="w-full h-32 object-cover"
                     />
                   </div>
                 )}
@@ -111,28 +129,27 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
 
               {/* Contenu */}
               <div className="space-y-2">
-                <Label htmlFor="content" className="text-sm font-medium text-foreground">
-                  Votre souvenir
-                </Label>
                 <Textarea
                   id="content"
                   value={formData.content}
                   onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                  placeholder="Un moment, une pensée, un souvenir..."
-                  className="min-h-32 sm:min-h-40 bg-background/50 border-border focus:bg-background resize-none dark:bg-input dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground"
+                  placeholder="Votre souvenir..."
+                  className="min-h-40 bg-background/50 border-border focus:bg-background resize-none"
                   required
                 />
               </div>
 
               {/* Actions */}
               <div className="pt-4">
-                <Button 
-                  type="submit" 
-                  className="w-full bg-gradient-gold text-primary-foreground hover:opacity-90 min-h-11"
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  <span className="text-sm sm:text-base">Sauvegarder le souvenir</span>
-                </Button>
+                                 <Button 
+                   type="submit" 
+                   className="w-full bg-gradient-gold text-primary-foreground hover:opacity-90 h-12"
+                 >
+                   <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center mr-2">
+                     <Plus className="h-3 w-3 text-white" />
+                   </div>
+                   Sauvegarder
+                 </Button>
               </div>
             </form>
           </CardContent>
@@ -158,56 +175,44 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
         <CardContent className="p-4 sm:p-6">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Date et lieu */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="date" className="text-sm font-medium text-foreground flex items-center">
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Date
-                </Label>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1">
                 <Input
                   id="date"
                   type="date"
                   value={formData.date}
                   onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                  className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
+                  className="bg-background/50 border-border focus:bg-background h-10"
                   required
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="location" className="text-sm font-medium text-foreground flex items-center">
-                  <MapPin className="h-4 w-4 mr-2" />
-                  Lieu (optionnel)
-                </Label>
+              <div className="space-y-1">
                 <Input
                   id="location"
                   value={formData.location}
                   onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                  placeholder="Où étiez-vous ?"
-                  className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
+                  placeholder="Lieu"
+                  className="bg-background/50 border-border focus:bg-background h-10"
                 />
               </div>
             </div>
 
             {/* Image */}
             <div className="space-y-2">
-              <Label htmlFor="image" className="text-sm font-medium text-foreground flex items-center">
-                <ImageIcon className="h-4 w-4 mr-2" />
-                Image (optionnelle)
-              </Label>
               <Input
                 id="image"
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                className="bg-background/50 border-border focus:bg-background h-10 sm:h-11"
+                className="bg-background/50 border-border focus:bg-background h-10"
               />
               {imagePreview && (
-                <div className="mt-3 rounded-lg overflow-hidden">
+                <div className="mt-2 rounded-lg overflow-hidden">
                   <img 
                     src={imagePreview} 
                     alt="Aperçu"
-                    className="w-full h-40 sm:h-48 object-cover"
+                    className="w-full h-32 object-cover"
                   />
                 </div>
               )}
@@ -215,35 +220,34 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
 
             {/* Contenu */}
             <div className="space-y-2">
-              <Label htmlFor="content" className="text-sm font-medium text-foreground">
-                Votre souvenir
-              </Label>
               <Textarea
                 id="content"
                 value={formData.content}
                 onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                placeholder="Racontez-nous ce moment... Que s'est-il passé ? Comment vous sentiez-vous ?"
-                className="min-h-28 sm:min-h-32 bg-background/50 border-border focus:bg-background resize-none"
+                placeholder="Votre souvenir..."
+                className="min-h-32 bg-background/50 border-border focus:bg-background resize-none"
                 required
               />
             </div>
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <Button 
-                type="submit" 
-                className="flex-1 bg-gradient-gold text-primary-foreground hover:opacity-90 min-h-11"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                <span className="text-sm sm:text-base">Sauvegarder le souvenir</span>
-              </Button>
+                             <Button 
+                 type="submit" 
+                 className="flex-1 bg-gradient-gold text-primary-foreground hover:opacity-90 h-12"
+               >
+                 <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center mr-2">
+                   <Plus className="h-3 w-3 text-white" />
+                 </div>
+                 Sauvegarder
+               </Button>
               <Button 
                 type="button" 
                 variant="outline" 
                 onClick={onCancel}
-                className="flex-1 min-h-11"
+                className="flex-1 h-12"
               >
-                <span className="text-sm sm:text-base">Annuler</span>
+                Annuler
               </Button>
             </div>
           </form>

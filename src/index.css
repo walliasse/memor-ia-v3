@@ -236,4 +236,41 @@
     border-color: hsl(var(--border));
     color: hsl(var(--foreground));
   }
+  
+  /* Styles pour le calendrier */
+  .calendar-day {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .calendar-day:hover {
+    @apply transform scale-105;
+  }
+  
+  .calendar-day-with-memory {
+    @apply relative;
+  }
+  
+  .calendar-day-indicator {
+    @apply absolute -top-1 -right-1 w-2 h-2 rounded-full shadow-sm;
+  }
+  
+  .calendar-day-indicator-multiple {
+    @apply absolute -top-1 -right-1 w-1 h-1 rounded-full;
+  }
+  
+  /* Animation pour les indicateurs de souvenirs */
+  @keyframes pulse-memory {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.8;
+      transform: scale(1.1);
+    }
+  }
+  
+  .calendar-day-indicator {
+    animation: pulse-memory 2s ease-in-out infinite;
+  }
 }

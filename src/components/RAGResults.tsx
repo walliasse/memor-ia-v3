@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -18,6 +17,7 @@ import {
 } from 'lucide-react'
 import { RAGResponse } from '@/lib/ragService'
 import MemoryCard from './MemoryCard'
+import MemoryDetailModal from './MemoryDetailModal'
 
 interface RAGResultsProps {
   response: RAGResponse
@@ -25,9 +25,10 @@ interface RAGResultsProps {
 }
 
 export default function RAGResults({ response, onReset }: RAGResultsProps) {
-  const navigate = useNavigate()
   const [showSources, setShowSources] = useState(true)
   const [showDetails, setShowDetails] = useState(false)
+  const [selectedMemory, setSelectedMemory] = useState<any>(null)
+  const [detailModalOpen, setDetailModalOpen] = useState(false)
 
   // Fonction pour formater la réponse IA avec des listes à puces
   const formatAIResponse = (text: string) => {
@@ -99,6 +100,11 @@ export default function RAGResults({ response, onReset }: RAGResultsProps) {
     if (confidence >= 0.8) return 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400'
     if (confidence >= 0.6) return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400'
     return 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400'
+  }
+
+  const handleViewMemory = (memory: any) => {
+    setSelectedMemory(memory)
+    setDetailModalOpen(true)
   }
 
   return (
@@ -215,19 +221,23 @@ export default function RAGResults({ response, onReset }: RAGResultsProps) {
             <CardContent className="space-y-4">
               {response.sources.map((memory, index) => (
                 <div key={memory.id} className="space-y-3">
-                                     <div 
-                     className="cursor-pointer transition-all hover:bg-muted/30 rounded-lg p-2 -m-2"
-                   >
-                     <MemoryCard 
-                       memory={memory} 
-                       onView={() => navigate(`/memory/${memory.id}`)}
-                       onEdit={() => navigate(`/memory/${memory.id}/edit`)}
-                       onDelete={() => {
-                         // Optionnel : gérer la suppression
-                         console.log('Suppression du souvenir:', memory.id)
-                       }}
-                     />
-                   </div>
+                  <div 
+                    className="cursor-pointer transition-all hover:bg-muted/30 rounded-lg p-2 -m-2"
+                    onClick={() => handleViewMemory(memory)}
+                  >
+                    <MemoryCard 
+                      memory={memory} 
+                      onView={() => handleViewMemory(memory)}
+                      onEdit={() => {
+                        // Optionnel : gérer l'édition
+                        console.log('Édition du souvenir:', memory.id)
+                      }}
+                      onDelete={() => {
+                        // Optionnel : gérer la suppression
+                        console.log('Suppression du souvenir:', memory.id)
+                      }}
+                    />
+                  </div>
                   
                   {index < response.sources.length - 1 && <Separator />}
                 </div>
@@ -248,6 +258,13 @@ export default function RAGResults({ response, onReset }: RAGResultsProps) {
           Nouvelle recherche
         </Button>
       </div>
+
+      {/* Modal pour afficher les détails du souvenir */}
+      <MemoryDetailModal
+        memory={selectedMemory}
+        open={detailModalOpen}
+        onOpenChange={setDetailModalOpen}
+      />
     </div>
   )
 } 

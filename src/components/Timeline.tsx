@@ -5,7 +5,7 @@ import MemoryCard from "./MemoryCard";
 import MemoryDetailModal from "./MemoryDetailModal";
 import MemoryEditModal from "./MemoryEditModal";
 import MemoryDeleteDialog from "./MemoryDeleteDialog";
-import { useMemories } from "@/hooks/useMemories";
+import { useMemories } from "@/contexts/MemoriesContext";
 import { Memory } from "@/lib/types";
 
 const Timeline = () => {
@@ -78,7 +78,7 @@ const Timeline = () => {
     }
   };
 
-  const handleUpdateMemory = async (id: string, updates: { content: string; date: string; location?: string }) => {
+  const handleUpdateMemory = async (id: string, updates: { content: string; date: string; location?: string; removeImage?: boolean; image?: File }) => {
     await updateMemory(id, updates);
   };
 

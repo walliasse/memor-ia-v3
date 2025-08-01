@@ -25,7 +25,8 @@ const MemoryCard = ({ memory, onView, onEdit, onDelete }: MemoryCardProps) => {
     return date.toLocaleDateString('fr-FR', {
       weekday: 'long',
       day: 'numeric',
-      month: 'long'
+      month: 'long',
+      year: 'numeric'
     });
   };
 
@@ -51,37 +52,27 @@ const MemoryCard = ({ memory, onView, onEdit, onDelete }: MemoryCardProps) => {
           {formatDateTitle(memory.date)}
         </h3>
 
-        {/* Localisation si présente */}
-        {memory.location && (
-          <div className="flex items-center text-xs sm:text-sm text-muted-foreground dark:text-amber-200/70 mb-3">
-            <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-            <span>{memory.location}</span>
-          </div>
-        )}
+        {/* Localisation et indicateur d'image */}
+        <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground dark:text-amber-200/70 mb-3">
+          {memory.location && (
+            <div className="flex items-center">
+              <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+              <span>{memory.location}</span>
+            </div>
+          )}
+          {memory.image_url && (
+            <div className="flex items-center">
+              <ImageIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+            </div>
+          )}
+        </div>
 
-        {/* Image si présente */}
-        {memory.image_url && (
-          <div className="mb-3 sm:mb-4 rounded-lg overflow-hidden">
-            <img 
-              src={memory.image_url} 
-              alt="Souvenir"
-              className="w-full h-32 sm:h-40 object-cover group-hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-        )}
+        {/* Image si présente - Supprimé pour ne pas afficher l'aperçu */}
 
         {/* Contenu tronqué */}
         <p className="text-sm sm:text-base text-foreground/80 dark:text-amber-100/90 leading-relaxed line-clamp-3">
           {memory.content}
         </p>
-
-        {/* Indicateur d'image */}
-        {memory.image_url && (
-          <div className="flex items-center mt-3 text-xs text-muted-foreground dark:text-amber-200/70">
-            <ImageIcon className="h-3 w-3 mr-1" />
-            <span>Avec image</span>
-          </div>
-        )}
       </CardContent>
     </Card>
   );

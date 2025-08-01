@@ -9,14 +9,15 @@ import Header from "@/components/Header";
 import ProfileSidebar from "@/components/ProfileSidebar";
 import { useProfile } from "@/hooks/useProfile";
 import { useAuth } from "@/hooks/useAuth";
-import { useMemories } from "@/hooks/useMemories";
+import { useMemories } from "@/contexts/MemoriesContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    bio: ""
+    bio: "",
+    birth_date: ""
   });
   
   const { profile, loading, saving, updateProfile } = useProfile();
@@ -29,7 +30,8 @@ export default function Profile() {
     if (profile) {
       setFormData({
         name: profile.name || "",
-        bio: profile.bio || ""
+        bio: profile.bio || "",
+        birth_date: profile.birth_date || ""
       });
     }
   }, [profile]);
@@ -37,7 +39,8 @@ export default function Profile() {
   const handleSave = async () => {
     const result = await updateProfile({
       name: formData.name.trim() || null,
-      bio: formData.bio.trim() || null
+      bio: formData.bio.trim() || null,
+      birth_date: formData.birth_date || null
     });
     
     if (result.success) {
@@ -67,8 +70,8 @@ export default function Profile() {
       <div className="flex min-h-screen bg-background">
         <ProfileSidebar activeTab="profile" />
         
-        <main className="flex-1 lg:ml-64">
-          <div className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 max-w-4xl">
+        <main className="flex-1 lg:ml-64 pb-20 lg:pb-0">
+          <div className="container mx-auto px-4 py-4 max-w-2xl">
             {loading ? (
               <div className="space-y-6">
                 <div className="h-48 bg-muted animate-pulse rounded-lg"></div>
@@ -77,13 +80,13 @@ export default function Profile() {
             ) : (
               <>
                 {/* En-tête du profil */}
-                <Card className="bg-gradient-memory shadow-warm border-border/50 mb-6">
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                <Card className="bg-gradient-memory shadow-warm border-border/50 mb-4">
+                  <CardContent className="p-4">
+                    <div className="flex flex-col items-center text-center space-y-4">
                       {/* Avatar */}
                       <div className="relative">
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-gold rounded-full flex items-center justify-center">
-                          <User className="h-10 w-10 sm:h-12 sm:w-12 text-primary-foreground" />
+                        <div className="w-20 h-20 bg-gradient-gold rounded-full flex items-center justify-center">
+                          <User className="h-10 w-10 text-primary-foreground" />
                         </div>
                         <Button 
                           size="icon" 
@@ -95,122 +98,127 @@ export default function Profile() {
                       </div>
 
                       {/* Informations principales */}
-                      <div className="flex-1 space-y-2">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                          <div>
-                            <h1 className="text-2xl sm:text-3xl font-serif font-bold text-foreground">
-                              {profile?.name || "Utilisateur"}
-                            </h1>
-                            <div className="flex items-center text-muted-foreground mt-1">
-                              <Mail className="h-4 w-4 mr-2" />
-                              <span>{user?.email}</span>
-                            </div>
-                          </div>
-                          
-                          <div className="flex gap-2">
-                            <Button
-                              onClick={() => setIsEditing(!isEditing)}
-                              variant={isEditing ? "outline" : "default"}
-                              className="shrink-0"
-                            >
-                              <Edit3 className="h-4 w-4 mr-2" />
-                              {isEditing ? "Annuler" : "Modifier"}
-                            </Button>
-                            
-                            <Button
-                              onClick={handleSignOut}
-                              variant="outline"
-                              className="shrink-0"
-                            >
-                              <LogOut className="h-4 w-4 mr-2" />
-                              Déconnexion
-                            </Button>
-                          </div>
+                      <div className="space-y-2">
+                        <h1 className="text-2xl font-serif font-bold text-foreground">
+                          {profile?.name || "Utilisateur"}
+                        </h1>
+                        <div className="flex items-center justify-center text-muted-foreground">
+                          <Mail className="h-4 w-4 mr-2" />
+                          <span className="text-sm">{user?.email}</span>
                         </div>
+                      </div>
 
-                        {/* Statistiques */}
-                        <div className="flex items-center gap-6 text-sm text-muted-foreground mt-4">
-                          {profile?.created_at && (
-                            <div className="flex items-center">
-                              <Calendar className="h-4 w-4 mr-1" />
-                              <span>Membre depuis {formatJoinDate(profile.created_at)}</span>
-                            </div>
-                          )}
-                          <div>
-                            <span className="font-medium text-foreground">{memories.length}</span> souvenir{memories.length > 1 ? 's' : ''}
+                      {/* Statistiques */}
+                      <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+                        {profile?.created_at && (
+                          <div className="flex items-center">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            <span>Membre depuis {formatJoinDate(profile.created_at)}</span>
                           </div>
+                        )}
+                        <div>
+                          <span className="font-medium text-foreground">{memories.length}</span> souvenir{memories.length > 1 ? 's' : ''}
                         </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex gap-2 w-full">
+                        <Button
+                          onClick={() => setIsEditing(!isEditing)}
+                          variant={isEditing ? "outline" : "default"}
+                          className="flex-1"
+                        >
+                          <Edit3 className="h-4 w-4 mr-2" />
+                          {isEditing ? "Annuler" : "Modifier"}
+                        </Button>
+                        
+                        <Button
+                          onClick={handleSignOut}
+                          variant="outline"
+                          className="flex-1"
+                        >
+                          <LogOut className="h-4 w-4 mr-2" />
+                          Déconnexion
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
 
-                {/* Formulaire d'édition */}
+                                {/* Formulaire d'édition */}
                 <Card className="bg-card shadow-soft border-border/50">
-                  <CardHeader>
-                    <CardTitle className="font-serif text-lg text-foreground">
-                      Informations personnelles
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Nom complet</Label>
-                        <Input
-                          id="name"
-                          value={formData.name}
-                          onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                          disabled={!isEditing}
-                          placeholder="Votre nom"
-                          className="bg-background/50 border-border focus:bg-background dark:bg-input dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground dark:disabled:bg-muted dark:disabled:text-muted-foreground"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Adresse email</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={user?.email || ""}
-                          disabled
-                          className="bg-muted border-border text-muted-foreground"
-                        />
-                      </div>
-                    </div>
-
+                  <CardContent className="p-4 space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="bio">Biographie</Label>
-                                              <Textarea
-                          id="bio"
-                          value={formData.bio}
-                          onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
-                          disabled={!isEditing}
-                          placeholder="Parlez-nous de vous..."
-                          className="min-h-24 bg-background/50 border-border focus:bg-background resize-none dark:bg-input dark:border-border dark:text-foreground dark:placeholder:text-muted-foreground dark:disabled:bg-muted dark:disabled:text-muted-foreground"
-                        />
+                      <Input
+                        id="name"
+                        value={formData.name}
+                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                        disabled={!isEditing}
+                        placeholder="Nom complet"
+                        className="bg-background/50 border-border focus:bg-background"
+                      />
                     </div>
+
+                                         <div className="space-y-2">
+                       <Input
+                         id="email"
+                         type="email"
+                         value={user?.email || ""}
+                         disabled
+                         className="bg-muted border-border text-muted-foreground"
+                         placeholder="Email"
+                       />
+                     </div>
+
+                     <div className="space-y-2">
+                       <Input
+                         id="birth_date"
+                         type="date"
+                         value={formData.birth_date}
+                         onChange={(e) => setFormData(prev => ({ ...prev, birth_date: e.target.value }))}
+                         disabled={!isEditing}
+                         className="bg-background/50 border-border focus:bg-background"
+                         max={new Date().toISOString().split('T')[0]}
+                       />
+                       <Label htmlFor="birth_date" className="text-sm text-muted-foreground">
+                         Date de naissance
+                       </Label>
+                     </div>
+
+                     <div className="space-y-2">
+                       <Textarea
+                         id="bio"
+                         value={formData.bio}
+                         onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                         disabled={!isEditing}
+                         placeholder="Biographie..."
+                         className="min-h-20 bg-background/50 border-border focus:bg-background resize-none"
+                       />
+                     </div>
 
                     {isEditing && (
-                      <div className="flex gap-3 pt-4">
+                      <div className="flex gap-2 pt-2">
                         <Button 
                           onClick={handleSave}
                           disabled={saving}
-                          className="bg-gradient-gold text-primary-foreground hover:opacity-90"
+                          className="flex-1 bg-gradient-gold text-primary-foreground hover:opacity-90"
                         >
                           {saving ? (
                             <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent mr-2" />
                           ) : null}
-                          Sauvegarder les modifications
+                          Sauvegarder
                         </Button>
                         <Button 
                           variant="outline" 
-                          onClick={() => {
-                            setIsEditing(false);
-                            setFormData({
-                              name: profile?.name || "",
-                              bio: profile?.bio || ""
-                            });
-                          }}
+                          className="flex-1"
+                                                     onClick={() => {
+                             setIsEditing(false);
+                             setFormData({
+                               name: profile?.name || "",
+                               bio: profile?.bio || "",
+                               birth_date: profile?.birth_date || ""
+                             });
+                           }}
                         >
                           Annuler
                         </Button>

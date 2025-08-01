@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NavigationProvider } from "@/contexts/NavigationContext";
+import { MemoriesProvider } from "@/contexts/MemoriesContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Memories from "./pages/Memories";
@@ -14,6 +15,7 @@ import NavigateHome from "./pages/NavigateHome";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Login from "./pages/Login";
+import MemoryDetail from "./pages/MemoryDetail";
 import MobileTabs from "./components/MobileTabs";
 import ForgotPasswordPage from './pages/ForgotPassword'
 import ResetPasswordPage from './pages/ResetPassword'
@@ -39,6 +41,7 @@ function AppContent() {
           <Route path="/naviguer" element={<NavigateHome />} />
           <Route path="/navigate" element={<AiSearch />} />
           <Route path="/recherche" element={<AiSearch />} />
+          <Route path="/memory/:id" element={<MemoryDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<NotFound />} />
@@ -57,7 +60,9 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <NavigationProvider>
-            <AppContent />
+            <MemoriesProvider>
+              <AppContent />
+            </MemoriesProvider>
           </NavigationProvider>
         </BrowserRouter>
       </TooltipProvider>

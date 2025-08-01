@@ -16,8 +16,12 @@ export interface Profile {
   email: string
   name?: string
   bio?: string
+  birth_date: string // Date de naissance obligatoire
   created_at: string
   updated_at: string
+  // Champs optionnels pour compatibilité avec la base de données existante
+  avatar_url?: string
+  favorite_locations?: string[]
 }
 
 // Types pour la fonctionnalité Travel

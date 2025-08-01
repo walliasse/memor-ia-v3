@@ -52,7 +52,8 @@ export function useProfile() {
         .insert({
           id: user.id,
           email: user.email || '',
-          name: user.user_metadata?.name || null
+          name: user.user_metadata?.name || null,
+          birth_date: '1990-01-01' // Date par défaut, l'utilisateur pourra la modifier
         })
         .select()
         .single()

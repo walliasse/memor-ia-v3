@@ -10,7 +10,7 @@ import Header from "@/components/Header";
 import ProfileSidebar from "@/components/ProfileSidebar";
 import ImportDataForm from "@/components/ImportDataForm";
 import { useAuth } from "@/hooks/useAuth";
-import { useMemories } from "@/hooks/useMemories";
+import { useMemories } from "@/contexts/MemoriesContext";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
@@ -145,182 +145,181 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background">
       <Header title="Réglages" showBack={true} />
       
       <div className="flex">
         <ProfileSidebar activeTab="settings" />
         
         {/* Contenu principal */}
-        <main className="flex-1 container mx-auto px-3 sm:px-4 py-6 sm:py-8 ml-64">
-          <div className="max-w-4xl mx-auto space-y-6">
+        <main className="flex-1 lg:ml-64 pb-20 lg:pb-0">
+          <div className="container mx-auto px-4 py-4 max-w-2xl space-y-4">
             
             {/* Intelligence Artificielle - Travel */}
             <Card className="bg-gradient-memory shadow-soft border-border/50">
-              <CardHeader>
-                <CardTitle className="font-serif text-lg text-foreground flex items-center">
+              <CardContent className="p-4 space-y-4">
+                <div className="flex items-center">
                   <Sparkles className="h-5 w-5 mr-2 text-primary" />
-                  Intelligence Artificielle - Travel
-                </CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  Gérez l'indexation de vos souvenirs pour la recherche intelligente
-                </p>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2">
+                  <h3 className="font-serif text-lg text-foreground">Travel IA</h3>
+                </div>
+                
+                <div className="flex flex-col gap-2">
                   <Button 
                     onClick={handleIndexMemories}
                     disabled={loading}
-                    className="flex-1"
+                    className="w-full"
                   >
-                    {loading ? "Indexation..." : "Indexer tous les souvenirs"}
+                    {loading ? "Indexation..." : "Indexer souvenirs"}
                   </Button>
                   <Button 
                     onClick={handleReindexMemories}
                     disabled={loading}
                     variant="outline"
-                    className="flex-1"
+                    className="w-full"
                   >
                     {loading ? "Nettoyage..." : "Nettoyer et réindexer"}
                   </Button>
                 </div>
                 
                 <div className="text-xs text-muted-foreground bg-muted/30 p-3 rounded-lg">
-                  <p className="font-medium mb-1">ℹ️ À propos de Travel :</p>
-                  <p>Travel utilise des embeddings OpenAI pour analyser le contenu de vos souvenirs et vous permettre de les rechercher en langage naturel. L'indexation génère des représentations vectorielles de vos souvenirs pour une recherche plus intelligente.</p>
+                  <p className="font-medium mb-1">ℹ️ Travel IA :</p>
+                  <p>Analyse vos souvenirs avec l'IA pour une recherche intelligente en langage naturel.</p>
                 </div>
               </CardContent>
             </Card>
 
             {/* Notifications */}
             <Card className="bg-card shadow-soft border-border/50">
-              <CardHeader>
-                <CardTitle className="font-serif text-lg text-foreground flex items-center">
+              <CardContent className="p-4 space-y-4">
+                <div className="flex items-center">
                   <Bell className="h-5 w-5 mr-2 text-primary" />
-                  Notifications
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Notifications push</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Recevoir des notifications sur votre appareil
-                    </p>
-                  </div>
-                  <Switch
-                    checked={settings.notifications}
-                    onCheckedChange={(checked) => handleSettingChange("notifications", checked)}
-                  />
+                  <h3 className="font-serif text-lg text-foreground">Notifications</h3>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Rappels par email</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Recevoir des rappels par email pour écrire
-                    </p>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm">Notifications push</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Sur votre appareil
+                      </p>
+                    </div>
+                    <Switch
+                      checked={settings.notifications}
+                      onCheckedChange={(checked) => handleSettingChange("notifications", checked)}
+                    />
                   </div>
-                  <Switch
-                    checked={settings.emailReminders}
-                    onCheckedChange={(checked) => handleSettingChange("emailReminders", checked)}
-                  />
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm">Rappels email</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Pour écrire
+                      </p>
+                    </div>
+                    <Switch
+                      checked={settings.emailReminders}
+                      onCheckedChange={(checked) => handleSettingChange("emailReminders", checked)}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Apparence */}
             <Card className="bg-card shadow-soft border-border/50">
-              <CardHeader>
-                <CardTitle className="font-serif text-lg text-foreground flex items-center">
+              <CardContent className="p-4 space-y-4">
+                <div className="flex items-center">
                   <Palette className="h-5 w-5 mr-2 text-primary" />
-                  Apparence
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Mode sombre</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Basculer entre le mode clair et sombre
-                    </p>
-                  </div>
-                  <Switch
-                    checked={theme === "dark"}
-                    onCheckedChange={toggleTheme}
-                  />
+                  <h3 className="font-serif text-lg text-foreground">Apparence</h3>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Langue</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Choisir la langue de l'interface
-                    </p>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm">Mode sombre</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Clair/sombre
+                      </p>
+                    </div>
+                    <Switch
+                      checked={theme === "dark"}
+                      onCheckedChange={toggleTheme}
+                    />
                   </div>
-                  <Select
-                    value={settings.language}
-                    onValueChange={(value) => handleSettingChange("language", value)}
-                  >
-                    <SelectTrigger className="w-32">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="fr">Français</SelectItem>
-                      <SelectItem value="en">English</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm">Langue</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Interface
+                      </p>
+                    </div>
+                    <Select
+                      value={settings.language}
+                      onValueChange={(value) => handleSettingChange("language", value)}
+                    >
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="fr">FR</SelectItem>
+                        <SelectItem value="en">EN</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Données */}
             <Card className="bg-card shadow-soft border-border/50">
-              <CardHeader>
-                <CardTitle className="font-serif text-lg text-foreground flex items-center">
+              <CardContent className="p-4 space-y-4">
+                <div className="flex items-center">
                   <Database className="h-5 w-5 mr-2 text-primary" />
-                  Données
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Sauvegarde automatique</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Sauvegarder automatiquement vos brouillons
-                    </p>
-                  </div>
-                  <Switch
-                    checked={settings.autoSave}
-                    onCheckedChange={(checked) => handleSettingChange("autoSave", checked)}
-                  />
+                  <h3 className="font-serif text-lg text-foreground">Données</h3>
                 </div>
                 
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label>Format d'export</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Choisir le format pour l'export de données
-                    </p>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm">Sauvegarde auto</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Brouillons
+                      </p>
+                    </div>
+                    <Switch
+                      checked={settings.autoSave}
+                      onCheckedChange={(checked) => handleSettingChange("autoSave", checked)}
+                    />
                   </div>
-                  <Select
-                    value={settings.exportFormat}
-                    onValueChange={(value) => handleSettingChange("exportFormat", value)}
-                  >
-                    <SelectTrigger className="w-32">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="json">JSON</SelectItem>
-                      <SelectItem value="csv">CSV</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label className="text-sm">Format export</Label>
+                      <p className="text-xs text-muted-foreground">
+                        Données
+                      </p>
+                    </div>
+                    <Select
+                      value={settings.exportFormat}
+                      onValueChange={(value) => handleSettingChange("exportFormat", value)}
+                    >
+                      <SelectTrigger className="w-20">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="json">JSON</SelectItem>
+                        <SelectItem value="csv">CSV</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 
-                <div className="flex gap-2">
-                  <Button onClick={handleExportData} variant="outline" className="flex-1">
+                <div className="flex flex-col gap-2">
+                  <Button onClick={handleExportData} variant="outline" className="w-full">
                     <Download className="h-4 w-4 mr-2" />
-                    Exporter mes données
+                    Exporter données
                   </Button>
                   <ImportDataForm />
                 </div>
@@ -329,24 +328,23 @@ export default function Settings() {
 
             {/* Sécurité */}
             <Card className="bg-card shadow-soft border-border/50">
-              <CardHeader>
-                <CardTitle className="font-serif text-lg text-foreground flex items-center">
+              <CardContent className="p-4 space-y-4">
+                <div className="flex items-center">
                   <Shield className="h-5 w-5 mr-2 text-primary" />
-                  Sécurité
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Button onClick={handleSignOut} variant="outline" className="flex-1">
+                  <h3 className="font-serif text-lg text-foreground">Sécurité</h3>
+                </div>
+                
+                <div className="flex flex-col gap-2">
+                  <Button onClick={handleSignOut} variant="outline" className="w-full">
                     <LogOut className="h-4 w-4 mr-2" />
                     Se déconnecter
                   </Button>
                   
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="destructive" className="flex-1">
+                      <Button variant="destructive" className="w-full">
                         <Trash2 className="h-4 w-4 mr-2" />
-                        Supprimer mon compte
+                        Supprimer compte
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -368,12 +366,12 @@ export default function Settings() {
                 
                 <div className="flex items-start space-x-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
                   <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-400 mt-0.5 flex-shrink-0" />
-                  <div className="text-sm">
+                  <div className="text-xs">
                     <p className="font-medium text-yellow-800 dark:text-yellow-200">
                       Attention
                     </p>
                     <p className="text-yellow-700 dark:text-yellow-300">
-                      La suppression de compte est définitive et ne peut pas être annulée.
+                      La suppression de compte est définitive.
                     </p>
                   </div>
                 </div>

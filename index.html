@@ -77,6 +77,9 @@
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
+        touch-action: pan-y;
+        -webkit-user-select: none;
+        user-select: none;
       }
       
       /* Permettre la sélection de texte dans les zones d'édition */
@@ -129,16 +132,12 @@
           }
         }, { passive: false });
         
-        // Empêcher le scroll sur le body et html
+        // Empêcher le scroll sur le body et html (mais permettre dans .scrollable)
         document.addEventListener('touchmove', function(event) {
-          if (!event.target.closest('.scrollable')) {
-            event.preventDefault();
-          }
-        }, { passive: false });
-        
-        // Empêcher le scroll sur le document
-        document.addEventListener('scroll', function(event) {
-          if (!event.target.closest('.scrollable')) {
+          const target = event.target;
+          const scrollable = target.closest('.scrollable');
+          
+          if (!scrollable) {
             event.preventDefault();
           }
         }, { passive: false });

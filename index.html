@@ -132,12 +132,27 @@
           }
         }, { passive: false });
         
-        // Empêcher le scroll sur le body et html (mais permettre dans .scrollable)
+        // Empêcher le scroll sur le body et html (mais permettre dans les zones avec overflow)
         document.addEventListener('touchmove', function(event) {
           const target = event.target;
-          const scrollable = target.closest('.scrollable');
           
-          if (!scrollable) {
+          // Permettre le scroll si l'élément ou un parent a overflow auto/scroll
+          let element = target;
+          let allowScroll = false;
+          
+          while (element && element !== document.body) {
+            const style = window.getComputedStyle(element);
+            const overflow = style.overflow + style.overflowY + style.overflowX;
+            
+            if (overflow.includes('auto') || overflow.includes('scroll')) {
+              allowScroll = true;
+              break;
+            }
+            
+            element = element.parentElement;
+          }
+          
+          if (!allowScroll) {
             event.preventDefault();
           }
         }, { passive: false });

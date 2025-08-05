@@ -65,10 +65,12 @@
         height: 100vh;
         width: 100vw;
         max-width: 100vw;
-        overflow: hidden;
+        overflow: auto;
         display: flex;
         flex-direction: column;
         position: relative;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
       }
       
       /* Scroll contrôlé uniquement dans les conteneurs avec classe .scrollable */
@@ -132,9 +134,14 @@
           }
         }, { passive: false });
         
-        // Empêcher le scroll sur le body et html (mais permettre dans les zones avec overflow)
+        // Empêcher le scroll sur le body et html (mais permettre dans #root et les zones avec overflow)
         document.addEventListener('touchmove', function(event) {
           const target = event.target;
+          
+          // Permettre le scroll dans #root
+          if (target.closest('#root')) {
+            return; // Permettre le scroll
+          }
           
           // Permettre le scroll si l'élément ou un parent a overflow auto/scroll
           let element = target;

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, maximum-scale=1.0, minimum-scale=1.0" />
     <title>Memor.ia - Votre Journal Intelligent</title>
     <meta name="description" content="Un journal personnel intelligent pour capturer et retrouver vos souvenirs" />
     <meta name="author" content="Memor.ia" />
@@ -28,37 +28,46 @@
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
     
     <style>
-      /* Configuration complète pour app mobile */
+      /* Configuration ultra-stricte pour app mobile */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-      }
-      
-      html {
-        height: 100%;
-        width: 100%;
-        overflow: hidden;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        -webkit-text-size-adjust: 100%;
-        -ms-text-size-adjust: 100%;
-        text-size-adjust: 100%;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
         -khtml-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
-        touch-action: none;
+        touch-action: none !important;
+      }
+      
+      html {
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        -webkit-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        text-size-adjust: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        touch-action: none !important;
+        overscroll-behavior: none;
+        -webkit-overflow-scrolling: auto;
       }
       
       body {
-        height: 100%;
-        width: 100%;
+        height: 100vh;
+        width: 100vw;
         overflow: hidden;
         position: fixed;
         top: 0;
@@ -72,24 +81,31 @@
         -webkit-overflow-scrolling: auto;
         overscroll-behavior: none;
         -webkit-tap-highlight-color: transparent;
+        touch-action: none !important;
+        -webkit-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        text-size-adjust: none;
       }
       
       #root {
-        height: 100%;
-        width: 100%;
+        height: 100vh;
+        width: 100vw;
         overflow: hidden;
         position: relative;
         display: flex;
         flex-direction: column;
+        touch-action: none !important;
       }
       
-      /* Permettre le scroll uniquement dans les conteneurs avec classe .scrollable */
+      /* Scroll contrôlé uniquement dans les conteneurs avec classe .scrollable */
       .scrollable {
         overflow-y: auto;
         overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
-        touch-action: pan-y;
+        touch-action: pan-y !important;
+        -webkit-user-select: none;
+        user-select: none;
       }
       
       /* Permettre la sélection de texte dans les zones d'édition */
@@ -98,21 +114,47 @@
         -moz-user-select: text !important;
         -ms-user-select: text !important;
         user-select: text !important;
-        touch-action: manipulation;
+        touch-action: manipulation !important;
+        font-size: 16px !important;
       }
       
       /* Empêcher le zoom sur double-tap */
       input, textarea, select, button {
-        font-size: 16px;
+        font-size: 16px !important;
+        -webkit-text-size-adjust: none;
+        -ms-text-size-adjust: none;
+        text-size-adjust: none;
       }
       
-      /* Désactiver les gestes de navigation */
+      /* Désactiver complètement les gestes sur mobile */
       @media (max-width: 768px) {
         html, body {
-          position: fixed;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
+          position: fixed !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          overflow: hidden !important;
+          touch-action: none !important;
+          -webkit-overflow-scrolling: auto !important;
+          overscroll-behavior: none !important;
+        }
+        
+        * {
+          touch-action: none !important;
+        }
+        
+        .scrollable {
+          touch-action: pan-y !important;
+        }
+      }
+      
+      /* Protection supplémentaire pour iOS */
+      @supports (-webkit-touch-callout: none) {
+        html, body {
+          position: fixed !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          overflow: hidden !important;
+          -webkit-overflow-scrolling: auto !important;
         }
       }
     </style>
@@ -133,42 +175,86 @@
         });
       }
       
-      // Protection contre le zoom et les gestes
+      // Protection ultra-stricte contre le zoom et les gestes
       document.addEventListener('DOMContentLoaded', function() {
-        // Empêcher le zoom avec les doigts
+        // Empêcher TOUS les gestes de zoom
         let lastTouchEnd = 0;
+        let lastTouchStart = 0;
+        
+        // Empêcher le double-tap zoom
         document.addEventListener('touchend', function (event) {
           const now = (new Date()).getTime();
           if (now - lastTouchEnd <= 300) {
             event.preventDefault();
+            event.stopPropagation();
+            return false;
           }
           lastTouchEnd = now;
-        }, false);
+        }, { passive: false });
         
-        // Empêcher le double-tap zoom
+        // Empêcher le multi-touch
         document.addEventListener('touchstart', function(event) {
+          lastTouchStart = (new Date()).getTime();
           if (event.touches.length > 1) {
             event.preventDefault();
+            event.stopPropagation();
+            return false;
           }
         }, { passive: false });
         
         // Empêcher le pinch zoom
         document.addEventListener('gesturestart', function(event) {
           event.preventDefault();
-        });
+          event.stopPropagation();
+          return false;
+        }, { passive: false });
         
         document.addEventListener('gesturechange', function(event) {
           event.preventDefault();
-        });
+          event.stopPropagation();
+          return false;
+        }, { passive: false });
         
         document.addEventListener('gestureend', function(event) {
           event.preventDefault();
-        });
+          event.stopPropagation();
+          return false;
+        }, { passive: false });
+        
+        // Empêcher TOUS les mouvements tactiles sauf dans .scrollable
+        document.addEventListener('touchmove', function(event) {
+          const target = event.target;
+          const scrollable = target.closest('.scrollable');
+          
+          if (!scrollable) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+          }
+          
+          // Empêcher le zoom même dans les zones scrollables
+          if (event.scale !== 1) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+          }
+        }, { passive: false });
         
         // Empêcher le scroll sur le body
         document.body.addEventListener('touchmove', function(event) {
           if (!event.target.closest('.scrollable')) {
             event.preventDefault();
+            event.stopPropagation();
+            return false;
+          }
+        }, { passive: false });
+        
+        // Empêcher le scroll sur le document
+        document.addEventListener('scroll', function(event) {
+          if (!event.target.closest('.scrollable')) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
           }
         }, { passive: false });
         
@@ -177,14 +263,40 @@
         if (meta) {
           meta.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover, maximum-scale=1.0, minimum-scale=1.0');
         }
+        
+        // Empêcher le zoom sur focus des inputs
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+          input.addEventListener('focus', function() {
+            setTimeout(() => {
+              this.style.fontSize = '16px';
+            }, 100);
+          });
+        });
       });
       
-      // Empêcher le scroll sur iOS
-      document.addEventListener('touchmove', function(event) {
-        if (event.scale !== 1) {
-          event.preventDefault();
-        }
-      }, { passive: false });
+      // Protection supplémentaire contre le zoom
+      window.addEventListener('load', function() {
+        // Empêcher le zoom sur iOS
+        document.addEventListener('touchmove', function(event) {
+          if (event.scale !== 1) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+          }
+        }, { passive: false });
+        
+        // Empêcher le scroll sur le body
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        
+        // Fixer la position
+        document.body.style.position = 'fixed';
+        document.body.style.width = '100vw';
+        document.body.style.height = '100vh';
+        document.body.style.top = '0';
+        document.body.style.left = '0';
+      });
     </script>
   </body>
 </html>

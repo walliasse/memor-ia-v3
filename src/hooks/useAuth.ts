@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
 import { User } from '@supabase/supabase-js'
 import { supabase } from '@/integrations/supabase/client'
-import { useToast } from './use-toast'
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
-  const { toast } = useToast()
 
   useEffect(() => {
     // Récupérer la session actuelle
@@ -32,17 +30,10 @@ export function useAuth() {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
       if (error) throw error
       
-      toast({
-        title: "Connexion réussie !",
-        description: "Bienvenue dans votre journal.",
-      })
+      console.log("Connexion réussie !")
       return { success: true }
     } catch (error: any) {
-      toast({
-        title: "Erreur de connexion",
-        description: error.message,
-        variant: "destructive"
-      })
+      console.error("Erreur de connexion:", error.message)
       return { success: false, error: error.message }
     }
   }
@@ -61,23 +52,10 @@ export function useAuth() {
       })
       if (error) throw error
       
-      // Si l'inscription réussit et qu'on a une date de naissance, on peut aussi l'enregistrer dans une table séparée
-      if (data.user && birthDate) {
-        // Ici on pourrait insérer dans une table profiles si nécessaire
-        // Pour l'instant, on utilise les metadata de l'utilisateur
-      }
-      
-      toast({
-        title: "Compte créé !",
-        description: "Vérifiez votre email pour confirmer votre compte.",
-      })
+      console.log("Compte créé !")
       return { success: true }
     } catch (error: any) {
-      toast({
-        title: "Erreur d'inscription",
-        description: error.message,
-        variant: "destructive"
-      })
+      console.error("Erreur d'inscription:", error.message)
       return { success: false, error: error.message }
     }
   }
@@ -88,17 +66,10 @@ export function useAuth() {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
       
-      toast({
-        title: "Déconnecté",
-        description: "À bientôt !",
-      })
+      console.log("Déconnecté")
       return { success: true }
     } catch (error: any) {
-      toast({
-        title: "Erreur",
-        description: error.message,
-        variant: "destructive"
-      })
+      console.error("Erreur de déconnexion:", error.message)
       return { success: false, error: error.message }
     }
   }

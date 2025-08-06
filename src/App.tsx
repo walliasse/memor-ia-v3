@@ -4,10 +4,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
-import { NavigationProvider } from "@/contexts/NavigationContext";
 import { MemoriesProvider } from "@/contexts/MemoriesContext";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import DebugInfo from "@/components/DebugInfo";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Memories from "./pages/Memories";
@@ -26,15 +24,6 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const location = useLocation();
-  
-  // Debug: logs pour identifier le problème
-  console.log('🚀 AppContent rendu, location:', location.pathname);
-  console.log('🔧 Environment:', {
-    NODE_ENV: process.env.NODE_ENV,
-    VITE_SUPABASE_URL: !!import.meta.env.VITE_SUPABASE_URL,
-    VITE_SUPABASE_ANON_KEY: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
-    VITE_OPENAI_API_KEY: !!import.meta.env.VITE_OPENAI_API_KEY,
-  });
   
   // Pages où afficher les onglets mobiles
   const showMobileTabs = ["/souvenirs", "/nouveau", "/naviguer", "/navigate"].includes(location.pathname);
@@ -60,33 +49,26 @@ function AppContent() {
       
       {/* Onglets mobiles */}
       {showMobileTabs && <MobileTabs />}
-      
-      {/* Debug Info */}
-      <DebugInfo />
     </div>
   );
 }
 
 function App() {
-  console.log('🚀 App component initialisé');
-  
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <NavigationProvider>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider>
             <MemoriesProvider>
-              <BrowserRouter>
-                <TooltipProvider>
-                  <AppContent />
-                  <Toaster />
-                  <Sonner />
-                </TooltipProvider>
-              </BrowserRouter>
+              <TooltipProvider>
+                <AppContent />
+                <Toaster />
+                <Sonner />
+              </TooltipProvider>
             </MemoriesProvider>
-          </NavigationProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </BrowserRouter>
     </ErrorBoundary>
   );
 }

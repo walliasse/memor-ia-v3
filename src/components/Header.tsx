@@ -1,8 +1,7 @@
 import { User, Moon, Sun, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useNavigation } from "@/contexts/NavigationContext";
 
 interface HeaderProps {
   title?: string;
@@ -11,8 +10,17 @@ interface HeaderProps {
 
 const Header = ({ title = "Souvenirs", showBack = false }: HeaderProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, toggleTheme } = useTheme();
-  const { getBackPath } = useNavigation();
+
+  const handleBack = () => {
+    // Logique simple de retour
+    if (location.pathname === '/profile' || location.pathname === '/settings') {
+      navigate('/souvenirs'); // Retour vers les souvenirs par défaut
+    } else {
+      navigate('/'); // Retour vers l'accueil
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background/80 dark:bg-background/95 backdrop-blur-md border-b border-border">
@@ -24,7 +32,7 @@ const Header = ({ title = "Souvenirs", showBack = false }: HeaderProps) => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => navigate(getBackPath())}
+                onClick={handleBack}
                 className="h-9 w-9 sm:h-10 sm:w-10"
               >
                 <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />

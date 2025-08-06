@@ -77,7 +77,7 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
           <CardContent className="p-4">
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Date et lieu */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Input
                     id="date"
@@ -175,7 +175,7 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
         <CardContent className="p-4 sm:p-6">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {/* Date et lieu */}
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div className="space-y-1">
                 <Input
                   id="date"

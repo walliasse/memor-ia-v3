@@ -7,16 +7,16 @@ const Index = () => {
   const navigate = useNavigate();
   const { loading, isAuthenticated } = useAuth();
 
-  // Rediriger les utilisateurs connectés vers /souvenirs
+  // Rediriger les utilisateurs connectés vers /nouveau (page d'écriture)
   useEffect(() => {
     if (!loading && isAuthenticated) {
-      navigate("/souvenirs", { replace: true });
+      navigate("/nouveau", { replace: true });
     }
   }, [isAuthenticated, loading, navigate]);
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
-      navigate("/souvenirs");
+      navigate("/nouveau");
     } else {
       navigate("/login");
     }

@@ -16,7 +16,7 @@ export interface Profile {
   email: string
   name?: string
   bio?: string
-  birth_date: string // Date de naissance obligatoire
+  birth_date?: string // Date de naissance optionnelle (sera obligatoire après migration)
   created_at: string
   updated_at: string
   // Champs optionnels pour compatibilité avec la base de données existante

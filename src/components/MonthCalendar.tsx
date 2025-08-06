@@ -137,12 +137,12 @@ export default function MonthCalendar({
                 
                 {/* Indicateur de souvenirs */}
                 {hasMemory && !isCurrentDay && (
-                  <div className="calendar-day-indicator bg-amber-400" />
+                  <div className="calendar-day-indicator bg-primary" />
                 )}
                 
                 {/* Indicateur pour aujourd'hui avec souvenirs */}
                 {hasMemory && isCurrentDay && (
-                  <div className="calendar-day-indicator bg-amber-200" />
+                  <div className="calendar-day-indicator bg-primary/60" />
                 )}
               </button>
             );

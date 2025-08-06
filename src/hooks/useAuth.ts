@@ -48,10 +48,24 @@ export function useAuth() {
   }
 
   // Inscription
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, birthDate?: string) => {
     try {
-      const { error } = await supabase.auth.signUp({ email, password })
+      const { data, error } = await supabase.auth.signUp({ 
+        email, 
+        password,
+        options: {
+          data: {
+            birth_date: birthDate
+          }
+        }
+      })
       if (error) throw error
+      
+      // Si l'inscription réussit et qu'on a une date de naissance, on peut aussi l'enregistrer dans une table séparée
+      if (data.user && birthDate) {
+        // Ici on pourrait insérer dans une table profiles si nécessaire
+        // Pour l'instant, on utilise les metadata de l'utilisateur
+      }
       
       toast({
         title: "Compte créé !",

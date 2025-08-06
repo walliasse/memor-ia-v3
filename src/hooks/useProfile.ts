@@ -47,13 +47,16 @@ export function useProfile() {
     if (!user) return
 
     try {
+      // Récupérer la date de naissance depuis les metadata de l'utilisateur
+      const birthDate = user.user_metadata?.birth_date || '1990-01-01'
+      
       const { data, error } = await supabase
         .from('profiles')
         .insert({
           id: user.id,
           email: user.email || '',
           name: user.user_metadata?.name || null,
-          birth_date: '1990-01-01' // Date par défaut, l'utilisateur pourra la modifier
+          birth_date: birthDate
         })
         .select()
         .single()

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Mail, Lock } from "lucide-react";
+import { Mail, Lock, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [birthDate, setBirthDate] = useState("");
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   
@@ -18,23 +19,29 @@ export default function Login() {
 
   // Rediriger si déjà connecté
   if (isAuthenticated) {
-    navigate("/souvenirs");
+    navigate("/nouveau");
     return null;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) return;
+    
+    // Vérifier que la date de naissance est fournie lors de l'inscription
+    if (!isLogin && !birthDate.trim()) {
+      alert("Veuillez saisir votre date de naissance");
+      return;
+    }
 
     setLoading(true);
     
     if (isLogin) {
       const result = await signInWithEmail(email, password);
       if (result.success) {
-        navigate("/souvenirs");
+        navigate("/nouveau");
       }
     } else {
-      const result = await signUp(email, password);
+      const result = await signUp(email, password, birthDate);
       if (result.success) {
         setIsLogin(true); // Revenir au mode connexion après inscription
       }
@@ -95,9 +102,27 @@ export default function Login() {
                 </div>
               </div>
 
+              {/* Champ date de naissance - seulement visible lors de l'inscription */}
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="birthDate">Date de naissance</Label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="birthDate"
+                      type="date"
+                      value={birthDate}
+                      onChange={(e) => setBirthDate(e.target.value)}
+                      required={!isLogin}
+                      className="pl-10 bg-background/50 border-border h-12"
+                    />
+                  </div>
+                </div>
+              )}
+
               <Button
                 type="submit"
-                disabled={loading || !email.trim() || !password.trim()}
+                disabled={loading || !email.trim() || !password.trim() || (!isLogin && !birthDate.trim())}
                 className="w-full h-12 bg-gradient-gold text-primary-foreground hover:opacity-90"
               >
                 {loading ? (

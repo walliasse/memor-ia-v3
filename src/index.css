@@ -89,56 +89,56 @@
   }
 
   .dark {
-    /* Base colors - tons sombres chaleureux */
-    --background: 220 15% 8%;
-    --foreground: 42 35% 92%;
+    /* Base colors - tons sombres avec meilleur contraste */
+    --background: 220 15% 6%;
+    --foreground: 0 0% 95%;
 
-    --card: 220 18% 10%;
-    --card-foreground: 42 30% 90%;
+    --card: 220 18% 8%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 220 18% 10%;
-    --popover-foreground: 42 30% 90%;
+    --popover: 220 18% 8%;
+    --popover-foreground: 0 0% 95%;
 
-    /* Primary - doré plus subtil en mode sombre */
-    --primary: 38 55% 45%;
-    --primary-foreground: 220 15% 8%;
+    /* Primary - doré plus lumineux pour meilleur contraste */
+    --primary: 38 65% 55%;
+    --primary-foreground: 220 15% 6%;
 
-    /* Secondary - gris chaud */
-    --secondary: 220 20% 15%;
-    --secondary-foreground: 42 25% 85%;
+    /* Secondary - gris plus contrasté */
+    --secondary: 220 20% 12%;
+    --secondary-foreground: 0 0% 90%;
 
-    --muted: 220 18% 12%;
-    --muted-foreground: 42 15% 65%;
+    --muted: 220 18% 10%;
+    --muted-foreground: 0 0% 75%;
 
-    /* Accent - bleu chaleureux */
-    --accent: 220 35% 25%;
-    --accent-foreground: 42 25% 85%;
+    /* Accent - bleu plus visible */
+    --accent: 220 35% 20%;
+    --accent-foreground: 0 0% 90%;
 
-    --destructive: 0 65% 45%;
-    --destructive-foreground: 42 25% 85%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 95%;
 
-    --border: 220 20% 18%;
-    --input: 220 20% 15%;
-    --ring: 38 55% 45%;
+    --border: 220 20% 15%;
+    --input: 220 20% 12%;
+    --ring: 38 65% 55%;
     
-    /* Gradients pour mode sombre */
-    --gradient-warm: linear-gradient(135deg, hsl(220 18% 10%), hsl(220 15% 12%));
-    --gradient-gold: linear-gradient(135deg, hsl(38 55% 45%), hsl(45 60% 55%));
-    --gradient-memory: linear-gradient(135deg, hsl(220 18% 10%), hsl(220 25% 12%));
+    /* Gradients pour mode sombre - plus contrastés */
+    --gradient-warm: linear-gradient(135deg, hsl(220 18% 8%), hsl(220 15% 10%));
+    --gradient-gold: linear-gradient(135deg, hsl(38 65% 55%), hsl(45 70% 65%));
+    --gradient-memory: linear-gradient(135deg, hsl(220 18% 8%), hsl(220 25% 10%));
     
     /* Ombres adaptées au mode sombre */
-    --shadow-soft: 0 4px 20px hsl(220 20% 5% / 0.3);
-    --shadow-warm: 0 8px 32px hsl(220 25% 5% / 0.4);
+    --shadow-soft: 0 4px 20px hsl(220 20% 3% / 0.4);
+    --shadow-warm: 0 8px 32px hsl(220 25% 3% / 0.5);
     
     /* Sidebar */
-    --sidebar-background: 220 20% 9%;
-    --sidebar-foreground: 42 25% 85%;
-    --sidebar-primary: 38 55% 45%;
-    --sidebar-primary-foreground: 220 15% 8%;
-    --sidebar-accent: 220 18% 12%;
-    --sidebar-accent-foreground: 42 25% 85%;
-    --sidebar-border: 220 20% 15%;
-    --sidebar-ring: 38 55% 45%;
+    --sidebar-background: 220 20% 7%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 38 65% 55%;
+    --sidebar-primary-foreground: 220 15% 6%;
+    --sidebar-accent: 220 18% 10%;
+    --sidebar-accent-foreground: 0 0% 90%;
+    --sidebar-border: 220 20% 12%;
+    --sidebar-ring: 38 65% 55%;
   }
 }
 
@@ -175,7 +175,26 @@
   
   /* Texte muted plus lisible */
   .dark .text-muted-foreground {
-    color: hsl(42 20% 70%) !important;
+    color: hsl(0 0% 75%) !important;
+  }
+  
+  /* Amélioration du contraste pour les liens */
+  .dark a {
+    color: hsl(38 65% 65%);
+  }
+  
+  .dark a:hover {
+    color: hsl(38 65% 75%);
+  }
+  
+  /* Amélioration des boutons en mode sombre */
+  .dark button:not(.bg-primary):not(.bg-destructive) {
+    color: hsl(0 0% 90%);
+  }
+  
+  .dark button:not(.bg-primary):not(.bg-destructive):hover {
+    background: hsl(220 20% 15%);
+    color: hsl(0 0% 95%);
   }
   
   /* Amélioration des boutons ghost */
@@ -185,7 +204,7 @@
   
   /* Placeholder plus visible */
   .dark ::placeholder {
-    color: hsl(42 15% 55%) !important;
+    color: hsl(0 0% 60%) !important;
   }
   
   /* Background des inputs désactivés */
@@ -252,6 +271,10 @@
   
   .calendar-day-indicator {
     @apply absolute -top-1 -right-1 w-2 h-2 rounded-full shadow-sm;
+  }
+  
+  .dark .calendar-day-indicator {
+    box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
   }
   
   .calendar-day-indicator-multiple {

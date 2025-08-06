@@ -37,8 +37,8 @@ export default function ProfileSidebar({ activeTab }: ProfileSidebarProps) {
                   to={item.to}
                   className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isActive
-                      ? "bg-primary/10 dark:bg-primary/20 text-primary dark:text-amber-400 border border-primary/20 dark:border-amber-400/30"
-                      : "text-muted-foreground dark:text-amber-200/70 hover:text-foreground dark:hover:text-amber-100 hover:bg-secondary/50 dark:hover:bg-accent"
+                              ? "bg-primary/10 dark:bg-primary/20 text-primary border border-primary/20 dark:border-primary/30"
+        : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 dark:hover:bg-accent"
                   }`}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
@@ -63,8 +63,8 @@ export default function ProfileSidebar({ activeTab }: ProfileSidebarProps) {
                 to={item.to}
                 className={`flex flex-col items-center space-y-1 px-4 py-2 rounded-lg transition-all duration-200 ${
                   isActive
-                    ? "text-primary dark:text-amber-400"
-                    : "text-muted-foreground dark:text-amber-200/70"
+                                    ? "text-primary"
+                : "text-muted-foreground"
                 }`}
               >
                 <Icon className="h-5 w-5" />

@@ -31,7 +31,7 @@ const Header = ({ title = "Souvenirs", showBack = false }: HeaderProps) => {
               </Button>
             ) : (
               <h1 
-                className="text-xl sm:text-2xl font-serif font-semibold text-primary dark:text-amber-400 cursor-pointer hover:opacity-80 transition-opacity"
+                className="text-xl sm:text-2xl font-serif font-semibold text-primary cursor-pointer hover:opacity-80 transition-opacity"
                 onClick={() => navigate("/")}
               >
                 memor.ia
@@ -41,7 +41,7 @@ const Header = ({ title = "Souvenirs", showBack = false }: HeaderProps) => {
 
           {/* Titre centré */}
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            <h2 className="text-lg sm:text-xl font-serif font-semibold text-foreground dark:text-amber-100">
+            <h2 className="text-lg sm:text-xl font-serif font-semibold text-foreground">
               {title}
             </h2>
           </div>

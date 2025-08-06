@@ -48,12 +48,12 @@ const MemoryCard = ({ memory, onView, onEdit, onDelete }: MemoryCardProps) => {
           <MemoryActionsMenu onEdit={onEdit} onDelete={onDelete} />
         </div>
         {/* Titre avec la date */}
-        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground dark:text-amber-100 mb-3 group-hover:text-primary transition-colors line-clamp-1 capitalize">
+        <h3 className="font-serif text-base sm:text-lg font-medium text-foreground mb-3 group-hover:text-primary transition-colors line-clamp-1 capitalize">
           {formatDateTitle(memory.date)}
         </h3>
 
         {/* Localisation et indicateur d'image */}
-        <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground dark:text-amber-200/70 mb-3">
+        <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground mb-3">
           {memory.location && (
             <div className="flex items-center">
               <MapPin className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -70,7 +70,7 @@ const MemoryCard = ({ memory, onView, onEdit, onDelete }: MemoryCardProps) => {
         {/* Image si présente - Supprimé pour ne pas afficher l'aperçu */}
 
         {/* Contenu tronqué */}
-        <p className="text-sm sm:text-base text-foreground/80 dark:text-amber-100/90 leading-relaxed line-clamp-3">
+        <p className="text-sm sm:text-base text-foreground/80 leading-relaxed line-clamp-3">
           {memory.content}
         </p>
       </CardContent>

@@ -19,11 +19,12 @@ VITE_OPENAI_API_KEY=sk-your-openai-api-key-here
 
 ### 2. Configuration Vercel
 
-Le fichier `vercel.json` est déjà configuré avec :
-- Build command : `npm run build`
+Le fichier `vercel.json` est configuré avec :
+- Build command personnalisé : `vercel-build.sh`
 - Output directory : `dist`
 - Framework : `vite`
 - Routes SPA (Single Page Application)
+- Headers MIME type corrects
 
 ### 3. Étapes de déploiement
 
@@ -33,6 +34,18 @@ Le fichier `vercel.json` est déjà configuré avec :
 4. **Déployez**
 
 ### 4. Diagnostic des problèmes
+
+#### Erreur MIME type "text/html"
+Si vous voyez cette erreur :
+```
+Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html"
+```
+
+**Solutions :**
+1. **Vérifiez la configuration Vercel** - Le fichier `vercel.json` doit être correct
+2. **Redéployez complètement** - Supprimez le cache Vercel
+3. **Vérifiez les variables d'environnement** - Elles doivent être configurées
+4. **Alternative Netlify** - Utilisez `netlify.toml` si Vercel pose problème
 
 #### Écran blanc sur Vercel
 
@@ -68,9 +81,25 @@ Appuyez sur `Ctrl+Shift+D` pour afficher les informations de debug.
 - Erreur : "OpenAI API key is required"
 - Solution : Configurez `VITE_OPENAI_API_KEY` dans Vercel
 
-### 7. Support
+#### Erreur MIME type
+- Erreur : "Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of "text/html""
+- Solution : 
+  1. Vérifiez que `vercel.json` est correct
+  2. Redéployez complètement
+  3. Utilisez Netlify comme alternative
+
+### 7. Alternative : Déploiement Netlify
+
+Si Vercel continue à poser problème :
+
+1. **Connectez votre repo à Netlify**
+2. **Configurez les variables d'environnement**
+3. **Le fichier `netlify.toml` est déjà configuré**
+
+### 8. Support
 
 Si le problème persiste :
-1. Vérifiez les logs Vercel
+1. Vérifiez les logs Vercel/Netlify
 2. Testez en local avec `npm run build && npm run preview`
-3. Comparez les variables d'environnement local vs production 
+3. Comparez les variables d'environnement local vs production
+4. Essayez le déploiement sur Netlify comme alternative 

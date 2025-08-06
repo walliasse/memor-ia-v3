@@ -18,6 +18,10 @@ export default function AiSearch() {
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Debug temporaire pour vérifier la configuration
+  const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+  console.log('🔑 OpenAI API Key configurée:', !!apiKey, apiKey ? `${apiKey.substring(0, 10)}...` : 'Non configurée');
+
   const suggestedQueries = [
     "Combien de fois je suis allé au restaurant en 2024 ?",
     "Raconte-moi mes vacances à Paris",
@@ -33,6 +37,12 @@ export default function AiSearch() {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
+    
+    // Debug: vérifier la clé API avant la recherche
+    if (!apiKey) {
+      alert('Erreur: Clé API OpenAI non configurée. Vérifiez les variables d\'environnement Vercel.');
+      return;
+    }
     
     await processQuery(searchQuery.trim());
   };

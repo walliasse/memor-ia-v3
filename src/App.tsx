@@ -6,6 +6,8 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { NavigationProvider } from "@/contexts/NavigationContext";
 import { MemoriesProvider } from "@/contexts/MemoriesContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
+import DebugInfo from "@/components/DebugInfo";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Memories from "./pages/Memories";
@@ -25,6 +27,15 @@ const queryClient = new QueryClient();
 function AppContent() {
   const location = useLocation();
   
+  // Debug: logs pour identifier le problème
+  console.log('🚀 AppContent rendu, location:', location.pathname);
+  console.log('🔧 Environment:', {
+    NODE_ENV: process.env.NODE_ENV,
+    VITE_SUPABASE_URL: !!import.meta.env.VITE_SUPABASE_URL,
+    VITE_SUPABASE_ANON_KEY: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
+    VITE_OPENAI_API_KEY: !!import.meta.env.VITE_OPENAI_API_KEY,
+  });
+  
   // Pages où afficher les onglets mobiles
   const showMobileTabs = ["/souvenirs", "/nouveau", "/naviguer", "/navigate"].includes(location.pathname);
 
@@ -38,36 +49,46 @@ function AppContent() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/souvenirs" element={<Memories />} />
           <Route path="/nouveau" element={<NewMemory />} />
-          <Route path="/naviguer" element={<NavigateHome />} />
-          <Route path="/navigate" element={<AiSearch />} />
-          <Route path="/recherche" element={<AiSearch />} />
-          <Route path="/memory/:id" element={<MemoryDetail />} />
+          <Route path="/naviguer" element={<AiSearch />} />
+          <Route path="/navigate" element={<NavigateHome />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/memory/:id" element={<MemoryDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
+      
+      {/* Onglets mobiles */}
       {showMobileTabs && <MobileTabs />}
+      
+      {/* Debug Info */}
+      <DebugInfo />
     </div>
   );
 }
 
-const App = () => (
-  <ThemeProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+function App() {
+  console.log('🚀 App component initialisé');
+  
+  return (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
           <NavigationProvider>
             <MemoriesProvider>
-              <AppContent />
+              <BrowserRouter>
+                <TooltipProvider>
+                  <AppContent />
+                  <Toaster />
+                  <Sonner />
+                </TooltipProvider>
+              </BrowserRouter>
             </MemoriesProvider>
           </NavigationProvider>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ThemeProvider>
-);
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
+  );
+}
 
 export default App;

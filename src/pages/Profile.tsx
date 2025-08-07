@@ -64,7 +64,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-20">
       <Header title="Profil" showBack={true} />
       
       <div className="flex min-h-screen bg-background">

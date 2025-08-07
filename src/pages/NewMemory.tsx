@@ -34,7 +34,7 @@ export default function NewMemory() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pt-20 pb-20">
       <Header title="Ecrire" />
 
       {/* Formulaire en pleine page */}

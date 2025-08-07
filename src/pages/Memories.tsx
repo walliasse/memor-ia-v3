@@ -10,7 +10,7 @@ export default function Memories() {
   const { memories, loading } = useMemories();
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pt-20 pb-20">
       <Header title="Souvenirs" />
       
       <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8">

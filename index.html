@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <title>Memor.ia - Votre Journal Intelligent</title>
-    <meta name="description" content="Un journal personnel intelligent pour capturer et retrouver vos souvenirs" />
+    <title>memor.ia - Voyagez dans vos souvenirs</title>
+    <meta name="description" content="memor.ia - Voyagez dans vos souvenirs" />
     <meta name="author" content="Memor.ia" />
     
     <!-- Icônes de l'application -->
@@ -29,8 +29,8 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://memor-ia-v3.vercel.app/" />
-    <meta property="og:title" content="Memor.ia - Votre Journal Intelligent" />
-    <meta property="og:description" content="Un journal personnel intelligent pour capturer et retrouver vos souvenirs" />
+    <meta property="og:title" content="memor.ia - Voyagez dans vos souvenirs" />
+    <meta property="og:description" content="memor.ia - Voyagez dans vos souvenirs" />
     <meta property="og:image" content="https://memor-ia-v3.vercel.app/logo.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -76,9 +76,6 @@
       
       /* Permettre la sélection de texte dans les zones d'édition */
       input, textarea, [contenteditable="true"] {
-        -webkit-user-select: text !important;
-        -moz-user-select: text !important;
-        -ms-user-select: text !important;
         user-select: text !important;
       }
       
@@ -95,6 +92,13 @@
         left: 0;
         right: 0;
         z-index: 50;
+      }
+      
+      /* Header sticky avec bon z-index */
+      header.sticky {
+        position: sticky;
+        top: 0;
+        z-index: 40;
       }
     </style>
   </head>

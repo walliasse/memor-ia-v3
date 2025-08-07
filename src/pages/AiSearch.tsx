@@ -65,7 +65,7 @@ export default function AiSearch() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pt-20 pb-20">
       <Header title="Naviguer" />
 
              <main className="container mx-auto px-3 sm:px-4 py-6 sm:py-8 space-y-6 max-w-2xl">

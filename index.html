@@ -44,52 +44,30 @@
     <meta name="twitter:image" content="https://memor-ia-v3.vercel.app/logo.png" />
     
     <style>
-      /* Configuration CSS Anti-Scroll et Native (comme v1) */
+      /* Configuration CSS simple et mobile-friendly */
       html, body {
-        height: 100vh;
-        width: 100vw;
-        max-width: 100vw;
-        overflow: hidden;
-        background: #f9fafb;
-        overscroll-behavior: none;
+        height: 100%;
+        width: 100%;
         margin: 0;
         padding: 0;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         -webkit-tap-highlight-color: transparent;
         -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        overflow-x: hidden;
+        background: #f9fafb;
       }
       
       #root {
-        height: 100vh;
-        width: 100vw;
-        max-width: 100vw;
-        overflow: auto;
+        height: 100%;
+        width: 100%;
         display: flex;
         flex-direction: column;
         position: relative;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
       }
       
-      /* Scroll contrôlé uniquement dans les conteneurs avec classe .scrollable */
-      .scrollable {
-        overflow-y: auto;
-        overflow-x: hidden;
-        -webkit-overflow-scrolling: touch;
-        overscroll-behavior: contain;
-        touch-action: pan-y;
-        -webkit-user-select: none;
-        user-select: none;
+      /* Empêcher le zoom sur double-tap */
+      input, textarea, select, button {
+        font-size: 16px !important;
       }
       
       /* Permettre la sélection de texte dans les zones d'édition */
@@ -98,12 +76,6 @@
         -moz-user-select: text !important;
         -ms-user-select: text !important;
         user-select: text !important;
-        font-size: 16px !important;
-      }
-      
-      /* Empêcher le zoom sur double-tap */
-      input, textarea, select, button {
-        font-size: 16px !important;
       }
     </style>
   </head>
@@ -123,7 +95,7 @@
         });
       }
       
-      // Configuration simple comme v1 (pas de JavaScript agressif)
+      // Configuration simple pour mobile
       document.addEventListener('DOMContentLoaded', function() {
         // Empêcher le zoom sur double-tap
         let lastTouchEnd = 0;
@@ -138,36 +110,6 @@
         // Empêcher le multi-touch
         document.addEventListener('touchstart', function(event) {
           if (event.touches.length > 1) {
-            event.preventDefault();
-          }
-        }, { passive: false });
-        
-        // Empêcher le scroll sur le body et html (mais permettre dans #root et les zones avec overflow)
-        document.addEventListener('touchmove', function(event) {
-          const target = event.target;
-          
-          // Permettre le scroll dans #root
-          if (target.closest('#root')) {
-            return; // Permettre le scroll
-          }
-          
-          // Permettre le scroll si l'élément ou un parent a overflow auto/scroll
-          let element = target;
-          let allowScroll = false;
-          
-          while (element && element !== document.body) {
-            const style = window.getComputedStyle(element);
-            const overflow = style.overflow + style.overflowY + style.overflowX;
-            
-            if (overflow.includes('auto') || overflow.includes('scroll')) {
-              allowScroll = true;
-              break;
-            }
-            
-            element = element.parentElement;
-          }
-          
-          if (!allowScroll) {
             event.preventDefault();
           }
         }, { passive: false });

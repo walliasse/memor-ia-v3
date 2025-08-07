@@ -7,19 +7,6 @@ const Index = () => {
   const navigate = useNavigate();
   const { loading, isAuthenticated } = useAuth();
 
-  // Diagnostic pour Vercel
-  useEffect(() => {
-    console.log('🔍 Diagnostic Index:', {
-      hostname: window.location.hostname,
-      pathname: window.location.pathname,
-      href: window.location.href,
-      loading,
-      isAuthenticated,
-      supabaseUrl: !!import.meta.env.VITE_SUPABASE_URL,
-      supabaseKey: !!import.meta.env.VITE_SUPABASE_ANON_KEY,
-    });
-  }, [loading, isAuthenticated]);
-
   // Rediriger les utilisateurs connectés vers /nouveau (page d'écriture)
   useEffect(() => {
     if (!loading && isAuthenticated) {

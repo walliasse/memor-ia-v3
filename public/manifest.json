@@ -1,16 +1,11 @@
 {
-  "short_name": "Memoria",
-  "name": "Memoria V3",
+  "short_name": "Memor.ia",
+  "name": "Memor.ia - Votre Journal Intelligent",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "/logo.png",
       "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "any"
     }
   ],
   "start_url": ".",

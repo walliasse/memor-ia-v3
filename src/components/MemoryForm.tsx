@@ -76,8 +76,8 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
         <Card className="w-full max-w-xl mx-auto bg-gradient-memory shadow-warm">
           <CardContent className="p-4">
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Date et lieu */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Date et lieu - centrés sur mobile */}
+              <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 max-w-sm sm:max-w-none mx-auto sm:mx-0">
                 <div className="space-y-1">
                   <Input
                     id="date"
@@ -107,15 +107,25 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
                 </div>
               </div>
 
-              {/* Image */}
+              {/* Image - bouton personnalisé */}
               <div className="space-y-2">
-                <Input
-                  id="image"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="bg-background/50 border-border focus:bg-background h-10"
-                />
+                <div className="relative">
+                  <input
+                    id="image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                  <label htmlFor="image" className="cursor-pointer">
+                    <div className="flex items-center justify-center w-full h-10 px-3 border border-border rounded-md bg-background/50 hover:bg-background transition-colors">
+                      <ImageIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">
+                        {formData.image ? formData.image.name : "Ajouter une photo"}
+                      </span>
+                    </div>
+                  </label>
+                </div>
                 {imagePreview && (
                   <div className="mt-2 rounded-lg overflow-hidden">
                     <img 
@@ -174,17 +184,24 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
 
         <CardContent className="p-4 sm:p-6">
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-            {/* Date et lieu */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Date et lieu - centrés sur mobile */}
+            <div className="flex flex-col sm:grid sm:grid-cols-2 gap-3 max-w-sm sm:max-w-none mx-auto sm:mx-0">
               <div className="space-y-1">
                 <Input
                   id="date"
                   type="date"
                   value={formData.date}
-                  onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                  className="bg-background/50 border-border focus:bg-background h-10"
+                  onChange={handleDateChange}
+                  min={minDate.toISOString().split('T')[0]}
+                  max={maxDate.toISOString().split('T')[0]}
+                  className={`bg-background/50 border-border focus:bg-background h-10 ${
+                    dateError ? 'border-red-500' : ''
+                  }`}
                   required
                 />
+                {dateError && (
+                  <p className="text-xs text-red-500 mt-1">{dateError}</p>
+                )}
               </div>
 
               <div className="space-y-1">
@@ -198,15 +215,25 @@ const MemoryForm = ({ onSave, onCancel, isFullPage = false }: MemoryFormProps) =
               </div>
             </div>
 
-            {/* Image */}
+            {/* Image - bouton personnalisé */}
             <div className="space-y-2">
-              <Input
-                id="image"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="bg-background/50 border-border focus:bg-background h-10"
-              />
+              <div className="relative">
+                <input
+                  id="image-modal"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+                <label htmlFor="image-modal" className="cursor-pointer">
+                  <div className="flex items-center justify-center w-full h-10 px-3 border border-border rounded-md bg-background/50 hover:bg-background transition-colors">
+                    <ImageIcon className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <span className="text-sm text-muted-foreground">
+                      {formData.image ? formData.image.name : "Ajouter une photo"}
+                    </span>
+                  </div>
+                </label>
+              </div>
               {imagePreview && (
                 <div className="mt-2 rounded-lg overflow-hidden">
                   <img 

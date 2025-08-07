@@ -6,11 +6,11 @@ export default function NavigateHome() {
   const navigate = useNavigate();
 
   const handleNavigateClick = () => {
-    navigate("/navigate");
+    navigate("/naviguer");
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col pt-20 pb-20">
       <Header title="Naviguer" />
 
       {/* Contenu principal centré */}
